@@ -1,12 +1,23 @@
 const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack')
+const output = {
+    // library: ['myLibrary', '[name]'],
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist')
+}
+if (process.env.NODE_ENV === 'production') {
+    output['libraryTarget'] = 'umd'
+}
 module.exports = {
-    entry: './src/app.js',
-    output: {
-        filename: 'my-charts.js',
-        path: path.resolve(__dirname, 'dist')
+    // entry: './src/index.js',
+    mode: 'development',
+    entry: {
+        index: './src/index.js',
+        'my-charts': './src/app.js'
     },
+    output,
     module: {
         rules: [
             {
@@ -22,8 +33,15 @@ module.exports = {
             }
         ],
     },
+    devServer: {
+        contentBase: path.join(__dirname, "dist"),
+    },
     plugins: [
         new CleanWebpackPlugin(),
+        new HtmlWebpackPlugin({template: './src/index.html'}),
+        new webpack.DefinePlugin({
+            "process.env.NODE_ENV" : (JSON.stringify(process.env.NODE_ENV))
+         })
     ],
     resolve: {
         alias: {
