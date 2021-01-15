@@ -45,3 +45,39 @@ loadChart.feed({
         }
     ]
 })
+
+/**
+ * pie
+ */
+let pieChart = new Charts({
+    canvasId: 'pie',
+    type: 'pie',
+    chartData: {
+
+    }
+})
+
+pieChart.feed({
+    data: [
+        {
+            label: 'pie1',
+            data: 23,
+        },
+        {
+            label: 'pie2',
+            data: 45
+        },
+        {
+            label: 'pie1',
+            data: 23,
+        },
+        {
+            label: 'pie2',
+            data: 4
+        },
+        {
+            label: 'pie2',
+            data: 4
+        }
+    ]
+})

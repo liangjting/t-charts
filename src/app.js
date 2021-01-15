@@ -1,6 +1,7 @@
 import drawRingProgress from '@/components/drawRingProgress'
 import Config from '@/config'
 import drawLoadChart from '@/components/drawLoadChart'
+import drawPieChart from '@/components/drawPieChart'
 
 export function Charts(opts) {
 
@@ -31,6 +32,8 @@ export function Charts(opts) {
         this.context = canvas.getContext('2d');
         this.context.scale(this.dpxRatio, this.dpxRatio)
     }
+    opts.width = this.width
+    opts.height = this.height
     this.opts = opts
     this.type = opts.type || ''
     this.chartData = opts.chartData || {}
@@ -43,6 +46,9 @@ Charts.prototype.draw = function () {
             break
         case 'load-chart':
             drawLoadChart(this, Config)
+            break
+        case 'pie':
+            drawPieChart(this.context, this.chartData.data, this.opts, Config)
             break
         default:
             break
