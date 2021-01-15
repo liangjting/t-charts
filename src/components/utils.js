@@ -25,3 +25,22 @@ export function measureText(text, fontsize=10) {
     })
     return width * fontsize / 10;
 }
+
+export function getRelativeRegion(width, height, padding=0, offset={}) {
+    let top = padding + (offset.top || 0)
+    let left = padding + (offset.left || 0)
+    width = width - left - padding - (offset.right || 0)
+    height = height - top - padding - (offset.bottom || 0)
+    return {
+        top,
+        left,
+        width,
+        height,
+        right: left + width,
+        bottom: height + top
+    }
+}
+
+export function absoluteCoord([x, y], {top, left}) {
+    return [x + left, y + top]
+}

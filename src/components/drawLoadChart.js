@@ -1,15 +1,37 @@
-function getDrawableArea(width, height, padding=0, offset={}) {
-    let top = padding + (offset.top || 0)
-    let left = padding + (offset.left || 0)
-    width = width - left - padding - (offset.right || 0)
-    height = height - top - padding - (offset.bottom || 0)
-    return {
-        top,
-        left,
-        width,
-        height,
-        right: left + width,
-        bottom: height + top
+import { measureText, getRelativeRegion, absoluteCoord } from '@/components/utils'
+
+
+function drawLegend(context, series, region, opts) {
+    let nums = series.length
+    let { width, height } = region
+    let markWidth = opts.markWidth || 10
+    let legendFontsize = opts.legendFontsize || 14
+    let legendList = []
+    let widthTotal = 0
+    let padding = 20
+    series.forEach(item => {
+        let w = markWidth + 2 + measureText(item.label, legendFontsize)
+        legendList.push({
+            color: item.color,
+            label: item.label,
+            offsetX: widthTotal,
+            width: w
+        })
+        widthTotal += w + padding
+    })
+
+    context.font = `${legendFontsize}px sans-serif`
+    context.textBaseline = 'middle'
+    context.textAlign = 'left'
+    for (let item of legendList) {
+        let center = [item.offsetX + markWidth, region.height >> 1]
+        let textCoord = [item.offsetX + 1.5 *  markWidth + 4, region.height >> 1]
+        context.fillStyle = item.color
+        context.beginPath()
+        context.arc(...absoluteCoord(center, region), markWidth >> 1, 0, 2 * Math.PI)
+        context.fill()
+        context.fillStyle = 'gray'
+        context.fillText(item.label, ...absoluteCoord(textCoord, region))
     }
 }
 
@@ -38,9 +60,9 @@ function drawLoadChart(chart, config) {
     let padding = config.padding || 0
     let textPadding = config.textPadding || 0
     let loadChartData = chart.chartData.data || []
-    let bottomAreaHeight = 30
+    let bottomAreaHeight = 40
     let leftArea = 40
-    let chartArea = getDrawableArea(width, height, padding, {bottom: bottomAreaHeight, left: leftArea})
+    let chartArea = getRelativeRegion(width, height, padding, {bottom: bottomAreaHeight, left: 0})
     console.log(chartArea)
     context.clearRect(0, 0, width, height)
     
@@ -63,11 +85,11 @@ function drawLoadChart(chart, config) {
         if (list.length > 0) {
             maxSpan = Math.max(list[list.length - 1][1], maxSpan)
         }
-        context.textAlign = 'right'
-        context.fillStyle = '#7e7e7e'
-        context.font = `15px Microsoft YaHei`
-        context.textBaseline = 'middle'
-        context.fillText(loadChartData[i].label, leftArea - textPadding, chartArea.bottom - i * offset * chartArea.height - chartArea.height * offset * 0.5)
+        // context.textAlign = 'right'
+        // context.fillStyle = '#7e7e7e'
+        // context.font = `15px Microsoft YaHei`
+        // context.textBaseline = 'middle'
+        // context.fillText(loadChartData[i].label, leftArea - textPadding, chartArea.bottom - i * offset * chartArea.height - chartArea.height * offset * 0.5)
     }
     let xAxisOffset = parseInt(chartArea.width / (maxSpan > 10 ? 10 : maxSpan))
     console.log(xAxisOffset)
@@ -77,10 +99,13 @@ function drawLoadChart(chart, config) {
     }
     
     // draw load span
-    let labels = []
+    let series = []
     for (let [index, item] of Object.entries(loadChartData)) {
-        context.fillStyle = config.colors[index] || '#ff0000'
-        labels.push([item.label, config.colors[index] || '#ff0000'])
+        context.fillStyle = config.colors[index % config.colors.length]
+        series.push({
+            label: item.label,
+            color: config.colors[index % config.colors.length]
+        })
         for (let span of item.data) {
             span = toPercentage(span, [maxSpan, maxSpan])
             fillRectP(context, span[0], 1 - index * offset - offset, span[1] - span[0], offset, chartArea)
@@ -88,14 +113,8 @@ function drawLoadChart(chart, config) {
     }
 
     // 绘制图示
-    for (let label of labels) {
-        // console.log(label)
-    }
-
-    // context.fillStyle = config.colors[0]
-    // context.fillRect(0, 0, width, height)
-    // context.fillStyle = config.colors[1]
-    // context.fillRect(chartArea.left, chartArea.top, chartArea.width, chartArea.height)
+    let legendRegion = getRelativeRegion(width, height, padding, {top: height - bottomAreaHeight + 20})
+    drawLegend(context, series, legendRegion, {markWidth: 10, legendFontsize: 14})
 }
 
 export default drawLoadChart
