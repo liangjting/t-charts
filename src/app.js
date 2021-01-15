@@ -1,5 +1,6 @@
 import drawRingProgress from '@/components/drawRingProgress'
 import Config from '@/config'
+import drawLoadChart from '@/components/drawLoadChart'
 
 export function Charts(opts) {
 
@@ -40,12 +41,15 @@ Charts.prototype.draw = function () {
         case 'ring-progress':
             drawRingProgress(this, Config)
             break
+        case 'load-chart':
+            drawLoadChart(this, Config)
+            break
         default:
             break
     }
 }
 
-Charts.prototype.updateData = function(data = {}) {
+Charts.prototype.feed = function(data = {}) {
     this.chartData = data
     this.draw()
 }

@@ -7,8 +7,8 @@ function drawRingProgress(chart, config) {
     let radius = (Math.min(width, height) - 2 * padding - barWidth) >> 1
     let center = [parseInt(width / 2), parseInt(height / 2)]
     let extraText = chart.opts.extraText
-    console.log(width, height, radius, center)
-    console.log(radius)
+    // console.log(width, height, radius, center)
+    // console.log(radius)
     if (progress == undefined) progress = 0
     progress = progress > 100 ? 100 : progress
     context.clearRect(0, 0, width, height)
