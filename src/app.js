@@ -26,9 +26,9 @@ export function Charts(opts) {
         let {height, width} = canvas.getBoundingClientRect()
         this.width = width
         this.height = height
-        canvas.width = width
-        canvas.height = height
         this.dpxRatio = window.devicePixelRatio
+        canvas.width = width * this.dpxRatio // 设置canvas 大小
+        canvas.height = height * this.dpxRatio
         this.context = canvas.getContext('2d');
         this.context.scale(this.dpxRatio, this.dpxRatio)
     }
