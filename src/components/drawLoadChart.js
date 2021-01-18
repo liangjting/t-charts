@@ -57,7 +57,7 @@ function fillRectP(context, xp, yp, wp, hp, {left, top, width, height}) {
 }
 function drawLoadChart(chart, config) {
     let { context, width, height } = chart
-    let padding = config.padding || 0
+    let padding = config.padding || 5
     let textPadding = config.textPadding || 0
     let loadChartData = chart.chartData.data || []
     let bottomAreaHeight = 40
@@ -91,11 +91,21 @@ function drawLoadChart(chart, config) {
         // context.textBaseline = 'middle'
         // context.fillText(loadChartData[i].label, leftArea - textPadding, chartArea.bottom - i * offset * chartArea.height - chartArea.height * offset * 0.5)
     }
-    let xAxisOffset = parseInt(chartArea.width / (maxSpan > 10 ? 10 : maxSpan))
+    let scale = 1
+    while (maxSpan / scale > 14) {
+        scale++
+    }
+    let xAxisOffset = parseInt(chartArea.width / (maxSpan / scale))
     console.log(xAxisOffset)
+    context.textBaseline = 'top'
+    context.textAlign = 'center'
+    context.strokeStyle = 'gray'
     for (let i = 0; i * xAxisOffset < chartArea.width; i++) {
-        context.textBaseline = 'top'
-        context.fillText(i, i * xAxisOffset + chartArea.left + textPadding, chartArea.bottom + textPadding)
+        context.beginPath()
+        context.moveTo(i * xAxisOffset + chartArea.left, chartArea.bottom + 1)
+        context.lineTo(i * xAxisOffset + chartArea.left, chartArea.bottom + 4)
+        context.stroke()
+        context.fillText(i * scale, i * xAxisOffset + chartArea.left, chartArea.bottom + textPadding + 4)
     }
     
     // draw load span
