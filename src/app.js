@@ -2,8 +2,9 @@ import drawRingProgress from '@/components/drawRingProgress'
 import Config from '@/config'
 import drawLoadChart from '@/components/drawLoadChart'
 import drawPieChart from '@/components/drawPieChart'
+import drawLineChart from '@/components/drawLineChart'
 
-export function Charts(opts) {
+export function Charts(opts={}) {
 
     try {
         const query = wx.createSelectorQuery()
@@ -32,9 +33,9 @@ export function Charts(opts) {
         this.context = canvas.getContext('2d');
         this.context.scale(this.dpxRatio, this.dpxRatio)
     }
+    this.opts = opts
     opts.width = this.width
     opts.height = this.height
-    this.opts = opts
     this.type = opts.type || ''
     this.chartData = opts.chartData || {}
 }
@@ -49,6 +50,9 @@ Charts.prototype.draw = function () {
             break
         case 'pie':
             drawPieChart(this.context, this.chartData.data, this.opts, Config)
+            break
+        case 'line':
+            drawLineChart(this.context, this.chartData.data, this.opts, Config)
             break
         default:
             break

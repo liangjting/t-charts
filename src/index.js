@@ -81,3 +81,21 @@ pieChart.feed({
         }
     ]
 })
+
+// line
+let lineChart = new Charts({
+    canvasId: 'line',
+    type: 'line',
+})
+
+lineChart.feed({
+    data: [
+        [0, 0],
+        [1, 1],
+        [3, 9],
+        [4, 16],
+        [5, 25],
+        [6, 36],
+        [7, 49]
+    ]
+})
