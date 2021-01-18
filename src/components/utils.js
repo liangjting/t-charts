@@ -44,3 +44,19 @@ export function getRelativeRegion(width, height, padding=0, offset={}) {
 export function absoluteCoord([x, y], {top, left}) {
     return [x + left, y + top]
 }
+
+export function regionFrom(region, offset={}) {
+    let {left, top, width, height, right, bottom} = region
+    top += offset.top || 0
+    left += offset.left || 0
+    width = offset.width || 0
+    height = offset.height || 0
+    return {
+        top,
+        left,
+        width,
+        height,
+        right: left + width,
+        bottom: top + height
+    }
+}
