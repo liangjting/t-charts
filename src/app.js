@@ -3,6 +3,7 @@ import Config from '@/config'
 import drawLoadChart from '@/components/drawLoadChart'
 import drawPieChart from '@/components/drawPieChart'
 import drawLineChart from '@/components/drawLineChart'
+import drawBarChart from '@/components/drawBarChart'
 
 export function Charts(opts={}) {
 
@@ -53,6 +54,9 @@ Charts.prototype.draw = function () {
             break
         case 'line':
             drawLineChart(this.context, this.chartData.data, this.opts, Config)
+            break
+        case 'bar':
+            drawBarChart(this.context, this.chartData.data, this.opts, Config)
             break
         default:
             break
