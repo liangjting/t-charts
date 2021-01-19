@@ -105,7 +105,7 @@ lineChart.feed({
 const barChart = new Charts({
     canvasId: 'bar',
     type: 'bar',
-    xLabels: []
+    xLabels: [],
 })
 
 barChart.feed({
@@ -128,3 +128,33 @@ barChart.feed({
         }
     ]
 })
+
+
+// stack-bar
+const stackBar = new Charts({
+    canvasId: 'stack-bar',
+    type: 'stack-bar',
+    legends: ['清醒', '深睡', '浅睡'],
+})
+
+stackBar.feed({
+    data: [
+        {
+            label: '周一',
+            data: [4, 2, 1]
+        },
+        {
+            label: '周二',
+            data: [3, 5, 2]
+        },
+        {
+            label: '周二',
+            data: [1, 7, 4]
+        },
+        {
+            label: '周四',
+            data: [8, 4, 1]
+        }
+    ]
+})
+
