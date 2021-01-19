@@ -19,34 +19,79 @@ export function calcAxisSeries(series, opts={}) {
     let yLabels = []
     let xLabelFormat = typeof opts.xLabelFormat === 'function' ? opts.xLabelFormat : (s) => s
     let yLabelFormat = typeof opts.yLabelFormat === 'function' ? opts.yLabelFormat :  s => s
+    let xLabelAlign = opts.xLabelAlign || 'center'
+    let yLabelAlign = opts.yLabelAlign || 'end'
+    let xOrigin = 0
+    let yMin = 0
     if (opts.xLabels) {
         xLabelNum = opts.xLabels.length
         let labelWP = 1 / (xLabelNum || 1)
-        let offset = labelWP / 2
+        let offset;
+        switch (xLabelAlign) {
+            case 'start':
+                offset = 0
+                break
+            case 'end':
+                offset = labelWP
+                break
+            default:
+                offset = labelWP / 2
+                break
+        }
         for (let i = 0; i < xLabelNum; i++) {
             let val = i * labelWP + offset
             xLabels.push([val, xLabelFormat(opts.xLabels[i])])
         }
     } else if (n > 0) {
+        xOrigin = series[0][0]
         xMax = opts.xMax || series[n - 1][0]
-        xRange = opts.xMax || series[n - 1][0]
-        let xUnit = (xRange + series[0][0]) / xLabelNum
-        xUnit > 1 ? xUnit = Math.ceil(xUnit) : xUnit.toFixed(2)
+        xRange = xMax - xOrigin
+        
+        let labelWP = 1 / (xLabelNum || 1)
+        let xUnit = xRange * labelWP
+        let offset;
+        xLabelAlign = opts.xLabelAlign || 'start'
+        switch (xLabelAlign) {
+            case 'start':
+                offset = 0
+                break
+            case 'end':
+                offset = labelWP
+                break
+            default:
+                offset = labelWP / 2
+                break
+        }
+        xUnit > 1 ? xUnit = Math.round(xUnit) : xUnit.toFixed(2)
         for (let i = 0; i < xLabelNum; i++) {
-            let val = i * xUnit
-            xLabels.push([val / xMax, xLabelFormat(xUnit > 1 ? val : val.toFixed(2))])
+            let xp = i * labelWP + offset
+            let val = xp * xRange + xOrigin
+            xLabels.push([xp, xLabelFormat((xUnit > 1 ? val.toFixed(1) : val.toFixed(2)))])
         }
     }
 
     if (opts.yLabels) {
         yLabelNum = opts.yLabels.length
         let labelHP = 1 / (yLabelNum || 1)
-        let offset = labelHP / 2
+        let offset =  0
+        switch (yLabelAlign) {
+            case 'start':
+                offset = 0
+                break
+            case 'center':
+                offset = labelHP / 2
+                break
+            default:
+                offset = labelHP
+                break
+        }
         for (let i = 0; i < yLabelNum; i++) {
             yLabels.push([i * labelHP + offset, yLabelFormat(opts.yLabels[i])])
         }
     } else if (n > 0) {
-        yMax = yRange = opts.yMax || Math.max(...series.map(item => item[1]))
+        yMax = opts.yMax || Math.max(...series.map(item => item[1]))
+        yMin = opts.yMin !== undefined ? opts.yMin : Math.min(...series.map(item => item[1]))
+        yRange = yMax - yMin
         let yUnit = yRange / yLabelNum
         yUnit > 1 ? yUnit = Math.ceil(yUnit) : yUnit.toFixed(2)
         // console.log(xUnit, yUnit)
@@ -65,7 +110,11 @@ export function calcAxisSeries(series, opts={}) {
         xLabelHeight,
         yLabelWidth,
         xMax,
-        yMax
+        yMax,
+        xOrigin,
+        xRange,
+        yRange,
+        yMin
     }
 }
 export function drawAxis(context, axis, region, opts, config) {
