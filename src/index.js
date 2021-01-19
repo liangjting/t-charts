@@ -86,6 +86,14 @@ pieChart.feed({
 let lineChart = new Charts({
     canvasId: 'line',
     type: 'line',
+    xLabelNum: 5,
+    axisFontSize: 14,
+    xLabelFormat(label) {
+        return label + 'm'
+    },
+    yLabelFormat(label) {
+        return label + 'm²'
+    }
 })
 
 lineChart.feed({
@@ -135,6 +143,9 @@ const stackBar = new Charts({
     canvasId: 'stack-bar',
     type: 'stack-bar',
     legends: ['清醒', '深睡', '浅睡'],
+    yLabelFormat: (label) => {
+        return label + 'h'
+    }
 })
 
 stackBar.feed({
