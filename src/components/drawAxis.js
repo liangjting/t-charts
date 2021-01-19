@@ -44,7 +44,7 @@ export function calcAxisSeries(series, opts={}) {
             yLabels.push([i * labelHP + offset, opts.yLabels[i]])
         }
     } else if (n > 0) {
-        yMax = yRange = opts.yRange || Math.max(...series.map(item => item[1]))
+        yMax = yRange = opts.yMax || Math.max(...series.map(item => item[1]))
         let yUnit = yRange / yLabelNum
         yUnit > 1 ? yUnit = Math.ceil(yUnit) : yUnit.toFixed(2)
         // console.log(xUnit, yUnit)
