@@ -7,7 +7,7 @@ export default function drawLegend(context, series, region, opts) {
     let legendFontsize = opts.legendFontsize || 14
     let legendList = []
     let widthTotal = 0
-    let padding = 20
+    let padding = opts.legendPadding || 20
     let shape = opts.shape || 'circle'
     series.forEach(item => {
         let w = markWidth + 2 + measureText(item.label, legendFontsize)

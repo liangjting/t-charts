@@ -5,7 +5,7 @@ export function measureText(text, fontsize=10) {
     text.forEach(item => {
         if (/[a-zA-Z]/.test(item)) {
             width += 7
-        } else if (/0-9/.test(item)) {
+        } else if (/[0-9]/.test(item)) {
             width += 5.5
         } else if (/\./.test(item)) {
             width += 2.7
