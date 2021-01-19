@@ -17,13 +17,15 @@ export function calcAxisSeries(series, opts={}) {
     let xMax = opts.xMax || 10
     let xLabels = []
     let yLabels = []
+    let xLabelFormat = typeof opts.xLabelFormat === 'function' ? opts.xLabelFormat : (s) => s
+    let yLabelFormat = typeof opts.yLabelFormat === 'function' ? opts.yLabelFormat :  s => s
     if (opts.xLabels) {
         xLabelNum = opts.xLabels.length
         let labelWP = 1 / (xLabelNum || 1)
         let offset = labelWP / 2
         for (let i = 0; i < xLabelNum; i++) {
             let val = i * labelWP + offset
-            xLabels.push([val, opts.xLabels[i]])
+            xLabels.push([val, xLabelFormat(opts.xLabels[i])])
         }
     } else if (n > 0) {
         xMax = opts.xMax || series[n - 1][0]
@@ -32,7 +34,7 @@ export function calcAxisSeries(series, opts={}) {
         xUnit > 1 ? xUnit = Math.ceil(xUnit) : xUnit.toFixed(2)
         for (let i = 0; i < xLabelNum; i++) {
             let val = i * xUnit
-            xLabels.push([val / xMax, xUnit > 1 ? val : val.toFixed(2)])
+            xLabels.push([val / xMax, xLabelFormat(xUnit > 1 ? val : val.toFixed(2))])
         }
     }
 
@@ -41,7 +43,7 @@ export function calcAxisSeries(series, opts={}) {
         let labelHP = 1 / (yLabelNum || 1)
         let offset = labelHP / 2
         for (let i = 0; i < yLabelNum; i++) {
-            yLabels.push([i * labelHP + offset, opts.yLabels[i]])
+            yLabels.push([i * labelHP + offset, yLabelFormat(opts.yLabels[i])])
         }
     } else if (n > 0) {
         yMax = yRange = opts.yMax || Math.max(...series.map(item => item[1]))
@@ -50,12 +52,13 @@ export function calcAxisSeries(series, opts={}) {
         // console.log(xUnit, yUnit)
         for (let i = 1; i <= yLabelNum; i++) {
             let val = i * yUnit
-            yLabels.push([val / yMax, yUnit > 1 ? (i * yUnit) : val.toFixed(2)])
+            yLabels.push([val / yMax, yLabelFormat(yUnit > 1 ? (i * yUnit) : val.toFixed(2))])
         }
     }
     
     let xLabelHeight = 20
-    let yLabelWidth = yLabels.reduce((a, b) => Math.max(measureText(b[1]), a), 0)
+    let fontSize = opts.axisFontSize || 10 
+    let yLabelWidth = yLabels.reduce((a, b) => Math.max(measureText(b[1], fontSize), a), 0)
     return {
         xLabels,
         yLabels,
@@ -69,11 +72,13 @@ export function drawAxis(context, axis, region, opts, config) {
     let markLen = 3
     let textPadding = 4
     let lineWidth = 1
+    let fontSize = opts.axisFontSize || 10
     // let axis = calcAxisSeries(series, region, opts)
     console.log(axis)
     let xlabelHeight = Math.ceil(axis.xLabelHeight) + markLen + textPadding
     let ylabelWidth = Math.ceil(axis.yLabelWidth) + markLen + textPadding
     
+    context.font = `${fontSize}px sans-serif`
     context.lineWidth = lineWidth
     context.strokeStyle = 'gray'
     context.beginPath()
@@ -90,6 +95,7 @@ export function drawAxis(context, axis, region, opts, config) {
     let yLabels = axis.yLabels.map(item => {
         return [Math.round(region.bottom - xlabelHeight - item[0] * cHeight), item[1]]
     })
+    context.font 
     context.textAlign = 'center'
     context.textBaseline = 'top'
     for (let item of xLabels) {
