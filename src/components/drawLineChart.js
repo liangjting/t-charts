@@ -14,9 +14,10 @@ export default function drawLineChart(context, series, opts, config) {
     // context.fillStyle = 'red'
     // context.fillRect(cRegion.left, cRegion.top, cRegion.width, cRegion.height)
     context.strokeStyle = opts.color || 'red'
-    let xMax = axis.xMax || 10
+    let xRange = axis.xRange || 10
     let yMax = axis.yMax || 10
-    let points = series.map(([x, y]) => [x / xMax, y/ yMax])
+    let xOrigin = result.xOrigin || 0
+    let points = series.map(([x, y]) => [(x - xOrigin) / xRange, y/ yMax])
     console.log(points)
     if (points.length > 0) {
         context.beginPath()
