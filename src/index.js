@@ -99,3 +99,32 @@ lineChart.feed({
         [7, 49]
     ]
 })
+
+
+//bar
+const barChart = new Charts({
+    canvasId: 'bar',
+    type: 'bar',
+    xLabels: []
+})
+
+barChart.feed({
+    data: [
+        {
+            label: '周一',
+            data: 4
+        },
+        {
+            label: '周二',
+            data: 7
+        },
+        {
+            label: '周二',
+            data: 8
+        },
+        {
+            label: '周四',
+            data: 12
+        }
+    ]
+})
