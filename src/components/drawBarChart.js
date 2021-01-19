@@ -1,12 +1,6 @@
-import { drawAxis, calcAxisSeries } from './drawAxis'
-import { getRelativeRegion } from './utils'
+import { drawAxis, calcAxisSeries} from './drawAxis'
+import { getRelativeRegion, darwBars } from './utils'
 
-function darwBar(context, series) {
-    for (let item of series) {
-        item.color && (context.fillStyle = item.color)
-        context.fillRect(...item.data)
-    }
-}
 export default function drawBarChart(context, series, opts, config) {
     let xLabels = []
     let arr = series.map(item => {
@@ -17,7 +11,7 @@ export default function drawBarChart(context, series, opts, config) {
     let axis = calcAxisSeries(arr, opts)
     let region = getRelativeRegion(opts.width, opts.height)
     let result = drawAxis(context, axis, region, opts, config)
-    console.log(result)
+    // console.log(result)
 
     let bars = []
     let barHalfWidth = (opts.barWidth || 16) >> 1
@@ -31,5 +25,5 @@ export default function drawBarChart(context, series, opts, config) {
         })
     }
     console.log(bars)
-    darwBar(context, bars)
+    darwBars(context, bars)
 }

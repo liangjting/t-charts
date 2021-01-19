@@ -60,3 +60,10 @@ export function regionFrom(region, offset={}) {
         bottom: top + height
     }
 }
+
+export function darwBars(context, series) {
+    for (let item of series) {
+        item.color && (context.fillStyle = item.color)
+        context.fillRect(...item.data)
+    }
+}
