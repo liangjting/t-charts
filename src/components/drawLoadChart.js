@@ -1,39 +1,5 @@
 import { measureText, getRelativeRegion, absoluteCoord } from '@/components/utils'
-
-
-function drawLegend(context, series, region, opts) {
-    let nums = series.length
-    let { width, height } = region
-    let markWidth = opts.markWidth || 10
-    let legendFontsize = opts.legendFontsize || 14
-    let legendList = []
-    let widthTotal = 0
-    let padding = 20
-    series.forEach(item => {
-        let w = markWidth + 2 + measureText(item.label, legendFontsize)
-        legendList.push({
-            color: item.color,
-            label: item.label,
-            offsetX: widthTotal,
-            width: w
-        })
-        widthTotal += w + padding
-    })
-
-    context.font = `${legendFontsize}px sans-serif`
-    context.textBaseline = 'middle'
-    context.textAlign = 'left'
-    for (let item of legendList) {
-        let center = [item.offsetX + markWidth, region.height >> 1]
-        let textCoord = [item.offsetX + 1.5 *  markWidth + 4, region.height >> 1]
-        context.fillStyle = item.color
-        context.beginPath()
-        context.arc(...absoluteCoord(center, region), markWidth >> 1, 0, 2 * Math.PI)
-        context.fill()
-        context.fillStyle = 'gray'
-        context.fillText(item.label, ...absoluteCoord(textCoord, region))
-    }
-}
+import drawLegend from './drawLegend'
 
 function drawAxis() {
 
