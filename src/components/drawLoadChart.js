@@ -22,7 +22,8 @@ function fillRectP(context, xp, yp, wp, hp, {left, top, width, height}) {
     context.fillRect(xp * width + left, yp * height + top, wp * width, hp * height)
 }
 function drawLoadChart(chart, config) {
-    let { context, width, height } = chart
+    let { width, height } = chart.opts
+    let context = chart.context
     let padding = config.padding || 5
     let textPadding = config.textPadding || 0
     let loadChartData = chart.chartData.data || []

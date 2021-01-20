@@ -7,8 +7,9 @@ import drawBarChart from '@/components/drawBarChart'
 import drawStackbarChart from '@/components/drawStackbarChart'
 
 export function Charts(opts={}) {
-
-    try {
+    this.ready = false
+    this.opts = opts
+    if (typeof wx != 'undefined') {
         const query = wx.createSelectorQuery()
         query.select('#'+opts.canvasId)
         .fields({ node: true, size: true })
@@ -18,26 +19,26 @@ export function Charts(opts={}) {
             this.dpr = wx.getSystemInfoSync().pixelRatio
             canvas.width = res[0].width * this.dpr
             canvas.height = res[0].height * this.dpr
-            this.width = res[0].width
-            this.height = res[0].height
+            this.opts.width = res[0].width
+            this.opts.height = res[0].height
             this.context = ctx
             this.context.scale(this.dpr, this.dpr)
-            console.log(this.canvas)
+            this.ready = true
+            typeof this.onReady === 'function' && this.onReady()
+            console.log(this)
         })
-    } catch {
+    } else {
         let canvas = document.getElementById(opts.canvasId)
         let {height, width} = canvas.getBoundingClientRect()
-        this.width = width
-        this.height = height
+        this.opts.width = width
+        this.opts.height = height
         this.dpxRatio = window.devicePixelRatio
         canvas.width = width * this.dpxRatio // 设置canvas 大小
         canvas.height = height * this.dpxRatio
         this.context = canvas.getContext('2d');
         this.context.scale(this.dpxRatio, this.dpxRatio)
+        this.ready = true
     }
-    this.opts = opts
-    opts.width = this.width
-    opts.height = this.height
     this.type = opts.type || ''
     this.chartData = opts.chartData || {}
 }
@@ -69,7 +70,13 @@ Charts.prototype.draw = function () {
 
 Charts.prototype.feed = function(data = {}) {
     this.chartData = data
-    this.draw()
+    if (this.ready) {
+        this.draw()
+    } else {
+        this.onReady = () => {
+            this.draw()
+        }
+    }
 }
 
 export default Charts

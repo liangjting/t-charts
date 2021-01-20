@@ -144,7 +144,7 @@ export function drawAxis(context, axis, region, opts, config) {
     let yLabels = axis.yLabels.map(item => {
         return [Math.round(region.bottom - xlabelHeight - item[0] * cHeight), item[1]]
     })
-    context.font 
+    context.fillStyle = opts.axiaLabelColor || 'gray'
     context.textAlign = 'center'
     context.textBaseline = 'top'
     for (let item of xLabels) {

@@ -1,6 +1,7 @@
 function drawRingProgress(chart, config) {
     let { progress } = chart.chartData
-    let { context, width, height } = chart
+    let { width, height } = chart.opts
+    let context = chart.context
     
     let padding = config.padding || 0
     let barWidth = config.ringProgressBarWidth || 10
