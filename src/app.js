@@ -46,6 +46,7 @@ export function Charts(opts={}) {
 }
 
 Charts.prototype.draw = function () {
+    this.context.clearRect(0, 0, this.opts.width, this.opts.height)
     switch (this.type) {
         case 'ring-progress':
             drawRingProgress(this, Config)

@@ -67,3 +67,14 @@ export function darwBars(context, series) {
         context.fillRect(...item.data)
     }
 }
+
+export function onePixelLine(context, fromX, fromY, toX, toY, dpr=1) {
+    context.save();
+	context.translate(0.5,0.5);
+	context.lineWidth = 1/dpr;
+	context.beginPath();
+	context.moveTo(fromX, fromY);
+	context.lineTo(toX,toY);
+	context.stroke();
+	context.restore();
+}

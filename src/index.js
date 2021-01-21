@@ -118,6 +118,30 @@ lineChart.feed({
     ]
 })
 
+document.getElementById('line-btn').addEventListener('click', line)
+function line() {
+    console.log('line btn click')
+    lineChart.feed({
+        data: [
+            [-7, 49],
+            [-6, 36],
+            [-5, 25],
+            [-4, 16],
+            [-3, 9],
+            [-2, 4],
+            [-1, 1],
+            [0, 0],
+            [1, 1],
+            [2, 4],
+            [3, 9],
+            [4, 16],
+            [5, 25],
+            [6, 36],
+            [7, 49]
+        ]
+    })
+}
+
 
 //bar
 const barChart = new Charts({

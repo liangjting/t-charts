@@ -1,4 +1,4 @@
-import { measureText, regionFrom } from './utils'
+import { measureText, regionFrom, onePixelLine } from './utils'
 
 /**
  * @param {[[x, y]]} series 
@@ -132,18 +132,18 @@ export function drawAxis(context, axis, region, opts, config) {
     let lineWidth = 1
     let fontSize = opts.axisFontSize || 10
     // let axis = calcAxisSeries(series, region, opts)
-    console.log(axis)
+    // console.log(axis)
     let xlabelHeight = Math.ceil(axis.xLabelHeight) + markLen + textPadding
     let ylabelWidth = Math.ceil(axis.yLabelWidth) + markLen + textPadding
-    context.save()
     context.font = `${fontSize}px sans-serif`
     context.lineWidth = lineWidth
     context.strokeStyle = opts.axisColor || 'gray'
-    context.beginPath()
-    // context.moveTo(region.left + ylabelWidth, region.top)
-    context.moveTo(region.left + ylabelWidth, region.bottom - xlabelHeight)
-    context.lineTo(region.right, region.bottom - xlabelHeight)
-    context.stroke()
+    // context.beginPath()
+    // // context.moveTo(region.left + ylabelWidth, region.top)
+    // context.moveTo(region.left + ylabelWidth, region.bottom - xlabelHeight)
+    // context.lineTo(region.right, region.bottom - xlabelHeight)
+    // context.stroke()
+    onePixelLine(context, region.left + ylabelWidth, region.bottom - xlabelHeight, region.right, region.bottom - xlabelHeight, opts.dpr)
     
     let cWidth = region.width - ylabelWidth
     let cHeight = region.height - xlabelHeight - 10
@@ -157,28 +157,29 @@ export function drawAxis(context, axis, region, opts, config) {
     context.textAlign = 'center'
     context.textBaseline = 'top'
     for (let item of xLabels) {
-        context.beginPath()
-        context.moveTo(item[0], region.bottom - xlabelHeight)
-        context.lineTo(item[0], region.bottom - xlabelHeight + markLen)
-        context.stroke()
+        // context.beginPath()
+        // context.moveTo(item[0], region.bottom - xlabelHeight)
+        // context.lineTo(item[0], region.bottom - xlabelHeight + markLen)
+        // context.stroke()
+        onePixelLine(context, item[0], region.bottom - xlabelHeight, item[0], region.bottom - xlabelHeight + markLen, opts.dpr)
         context.fillText(item[1], item[0], region.bottom - xlabelHeight + markLen + textPadding)
     }
     context.strokeStyle = opts.axisColor || '#cccccc'
     context.textAlign = 'right'
     context.textBaseline = 'middle'
     for (let item of yLabels) {
-        context.beginPath()
-        context.moveTo(region.left + ylabelWidth - markLen, item[0])
-        context.lineTo(region.right, item[0])
-        context.stroke()
+        // context.beginPath()
+        // context.moveTo(region.left + ylabelWidth - markLen, item[0])
+        // context.lineTo(region.right, item[0])
+        // context.stroke()
+        onePixelLine(context, region.left + ylabelWidth, item[0], region.right, item[0], opts.dpr)
         context.fillText(item[1], region.left + ylabelWidth - markLen - textPadding, item[0])
     }
-    context.restore()
     region = regionFrom(region, {
         top: 10,
-        left: ylabelWidth + lineWidth,
-        width: cWidth - lineWidth,
-        height: cHeight - lineWidth
+        left: ylabelWidth,
+        width: cWidth,
+        height: cHeight
     })
     return {
         region,
