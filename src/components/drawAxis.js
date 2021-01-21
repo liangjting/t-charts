@@ -92,7 +92,7 @@ export function calcAxisSeries(series, opts={}) {
         yMax = opts.yMax || Math.max(...series.map(item => item[1]))
         yMin = opts.yMin !== undefined ? opts.yMin : Math.min(...series.map(item => item[1]))
         yRange = yMax - yMin
-        let yUnit = yRange / yLabelNum
+        let yUnit = yMax / yLabelNum
         yUnit > 1 ? yUnit = Math.ceil(yUnit) : yUnit.toFixed(2)
         // console.log(xUnit, yUnit)
         for (let i = 1; i <= yLabelNum; i++) {
@@ -117,6 +117,15 @@ export function calcAxisSeries(series, opts={}) {
         yMin
     }
 }
+
+/**
+ * 
+ * @param {*} context 
+ * @param {*} axis 
+ * @param {*} region 
+ * @param {{axisColor, axisLabelColor, axisFontSize}} opts 
+ * @param {*} config 
+ */
 export function drawAxis(context, axis, region, opts, config) {
     let markLen = 3
     let textPadding = 4
@@ -126,10 +135,10 @@ export function drawAxis(context, axis, region, opts, config) {
     console.log(axis)
     let xlabelHeight = Math.ceil(axis.xLabelHeight) + markLen + textPadding
     let ylabelWidth = Math.ceil(axis.yLabelWidth) + markLen + textPadding
-    
+    context.save()
     context.font = `${fontSize}px sans-serif`
     context.lineWidth = lineWidth
-    context.strokeStyle = 'gray'
+    context.strokeStyle = opts.axisColor || 'gray'
     context.beginPath()
     // context.moveTo(region.left + ylabelWidth, region.top)
     context.moveTo(region.left + ylabelWidth, region.bottom - xlabelHeight)
@@ -144,7 +153,7 @@ export function drawAxis(context, axis, region, opts, config) {
     let yLabels = axis.yLabels.map(item => {
         return [Math.round(region.bottom - xlabelHeight - item[0] * cHeight), item[1]]
     })
-    context.fillStyle = opts.axiaLabelColor || 'gray'
+    context.fillStyle = opts.axisLabelColor || 'gray'
     context.textAlign = 'center'
     context.textBaseline = 'top'
     for (let item of xLabels) {
@@ -154,7 +163,7 @@ export function drawAxis(context, axis, region, opts, config) {
         context.stroke()
         context.fillText(item[1], item[0], region.bottom - xlabelHeight + markLen + textPadding)
     }
-    context.strokeStyle = '#cccccc'
+    context.strokeStyle = opts.axisColor || '#cccccc'
     context.textAlign = 'right'
     context.textBaseline = 'middle'
     for (let item of yLabels) {
@@ -164,6 +173,7 @@ export function drawAxis(context, axis, region, opts, config) {
         context.stroke()
         context.fillText(item[1], region.left + ylabelWidth - markLen - textPadding, item[0])
     }
+    context.restore()
     region = regionFrom(region, {
         top: 10,
         left: ylabelWidth + lineWidth,

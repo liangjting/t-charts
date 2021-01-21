@@ -6,7 +6,7 @@ let charts = new Charts({
     chartData: {
         progress,
     },
-    extraText: '睡眠得分'
+    label: '睡眠得分',
 })
 charts.draw()
 document.getElementById('test-btn').addEventListener('click', update)

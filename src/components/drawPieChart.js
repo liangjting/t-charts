@@ -9,7 +9,7 @@ import drawLegend from './drawLegend'
 /**
  * 
  * @param {*} series 
- * @param {*} opts 
+ * @param {{pieRadius}} opts 
  * @param {*} config 
  * @param {*} context 
  */

@@ -2,6 +2,13 @@ import { drawAxis, calcAxisSeries } from './drawAxis'
 import { getRelativeRegion, darwBars } from './utils'
 import drawLegend from './drawLegend'
 
+/**
+ * 
+ * @param {*} context 
+ * @param {*} series 
+ * @param {{barWidth, legends}} opts 
+ * @param {*} config 
+ */
 export default function drawStackbarChart(context, series, opts, config) {
     let xLabels = []
     let arr = series.map(item => {

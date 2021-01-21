@@ -16,13 +16,14 @@ export function Charts(opts={}) {
         .exec((res) => {
             const canvas = res[0].node
             const ctx = canvas.getContext('2d')
-            this.dpr = wx.getSystemInfoSync().pixelRatio
-            canvas.width = res[0].width * this.dpr
-            canvas.height = res[0].height * this.dpr
+            let dpr = wx.getSystemInfoSync().pixelRatio
+            canvas.width = res[0].width * dpr
+            canvas.height = res[0].height * dpr
             this.opts.width = res[0].width
             this.opts.height = res[0].height
             this.context = ctx
-            this.context.scale(this.dpr, this.dpr)
+            this.context.scale(dpr, dpr)
+            this.opts.dpr = dpr
             this.ready = true
             typeof this.onReady === 'function' && this.onReady()
             console.log(this)
@@ -32,11 +33,12 @@ export function Charts(opts={}) {
         let {height, width} = canvas.getBoundingClientRect()
         this.opts.width = width
         this.opts.height = height
-        this.dpxRatio = window.devicePixelRatio
-        canvas.width = width * this.dpxRatio // 设置canvas 大小
-        canvas.height = height * this.dpxRatio
+        let dpr  = window.devicePixelRatio
+        canvas.width = width * dpr // 设置canvas 大小
+        canvas.height = height * dpr
         this.context = canvas.getContext('2d');
-        this.context.scale(this.dpxRatio, this.dpxRatio)
+        this.context.scale(dpr, dpr)
+        this.opts.dpr = dpr
         this.ready = true
     }
     this.type = opts.type || ''

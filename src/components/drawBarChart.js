@@ -1,6 +1,13 @@
 import { drawAxis, calcAxisSeries} from './drawAxis'
 import { getRelativeRegion, darwBars } from './utils'
 
+/**
+ * 
+ * @param {*} context 
+ * @param {*} series 
+ * @param {{barWidth, xLabels}} opts 
+ * @param {*} config 
+ */
 export default function drawBarChart(context, series, opts, config) {
     let xLabels = []
     let arr = series.map(item => {

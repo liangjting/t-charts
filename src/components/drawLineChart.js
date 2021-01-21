@@ -3,6 +3,13 @@ import { getRelativeRegion } from './utils'
 function coordFromPencentage([xp, yp], {left, bottom, width, height}) {
     return [xp * width + left, bottom - yp * height]
 }
+/**
+ * 
+ * @param {*} context 
+ * @param {*} series 
+ * @param {{color}} opts 
+ * @param {*} config 
+ */
 export default function drawLineChart(context, series, opts, config) {
     let width = opts.width || 300
     let height = opts.height || 150

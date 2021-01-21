@@ -1,5 +1,12 @@
 import { measureText, absoluteCoord } from '@/components/utils'
 
+/**
+ * 
+ * @param {*} context 
+ * @param {*} series 
+ * @param {*} region 
+ * @param {{legendPadding, shape}} opts 
+ */
 export default function drawLegend(context, series, region, opts) {
     let nums = series.length
     let { width, height } = region
