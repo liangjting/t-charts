@@ -72,7 +72,11 @@ Charts.prototype.draw = function () {
 }
 
 Charts.prototype.feed = function(data = {}) {
-    this.chartData = data
+    if (data instanceof Array) {
+        this.chartData = {data}
+    } else {
+        this.chartData = data
+    }
     if (this.ready) {
         this.draw()
     } else {

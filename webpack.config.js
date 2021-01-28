@@ -2,6 +2,7 @@ const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const output = {
     // library: ['myLibrary', '[name]'],
     filename: '[name].js',
@@ -10,6 +11,9 @@ const output = {
 if (process.env.NODE_ENV === 'production') {
     output['libraryTarget'] = 'umd'
 }
+
+const banner = `@author: ljt
+@date: ${new Date()}`
 module.exports = {
     // entry: './src/index.js',
     mode: 'development',
@@ -41,11 +45,23 @@ module.exports = {
         new HtmlWebpackPlugin({template: './src/index.html'}),
         new webpack.DefinePlugin({
             "process.env.NODE_ENV" : (JSON.stringify(process.env.NODE_ENV))
-         })
+        }),
+        new webpack.BannerPlugin(banner)
     ],
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'src')
         }
-    }
+    },
+    optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+                uglifyOptions: {
+                    compress: {
+                        drop_console: true
+                    }
+                },
+            })
+        ],
+    },
 }
