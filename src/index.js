@@ -52,6 +52,11 @@ loadChart.feed({
 let pieChart = new Charts({
     canvasId: 'pie',
     type: 'pie',
+    labelFormat: (label, val, sum) => {
+        return (val * 100 / sum).toFixed(1) + '% ' + label
+    },
+    labelSize: 12,
+    // labelLine: 'straight',
     chartData: {
 
     }
@@ -61,11 +66,23 @@ pieChart.feed({
     data: [
         {
             label: 'pie1',
-            data: 23,
+            data: 2,
         },
         {
             label: 'pie2',
-            data: 45
+            data: 43
+        },
+        {
+            label: 'pie1',
+            data: 5,
+        },
+        {
+            label: 'pie2',
+            data: 4
+        },
+        {
+            label: 'pie2',
+            data: 4
         },
         {
             label: 'pie1',
@@ -76,9 +93,14 @@ pieChart.feed({
             data: 4
         },
         {
+            label: 'pie1',
+            data: 322,
+        },
+        {
             label: 'pie2',
             data: 4
-        }
+        },
+
     ]
 })
 
