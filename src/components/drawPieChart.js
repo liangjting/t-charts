@@ -31,6 +31,8 @@ function distance([x1, y1], [x2, y2]) {
     let textSize = opts.labelSize || 10
     let quarters = [0, 0, 0, 0] //顺时针
     let padding = textSize >> 1
+    let labelMargin = opts.labelMargin || 1
+    textSize += labelMargin
     
     let quarterHeight = opts.height
     let labelLen = labelsRightQuarter.length
@@ -101,7 +103,7 @@ function distance([x1, y1], [x2, y2]) {
         } else {
             let prev = labelsLeftQuarter[i - 1]
             d = (yEnd - prev.lineEnd[1])
-            console.log(i, prev.lineEnd[1], yEnd, d)
+            // console.log(i, prev.lineEnd[1], yEnd, d)
             // console.log('restH: ' + restHeight, quarterHeight)
             if (restHeight <= 0) {
                 // console.log('oversize', restHeight)
@@ -133,7 +135,7 @@ function distance([x1, y1], [x2, y2]) {
 /**
  * 
  * @param {*} series 
- * @param {{pieRadius}} opts 
+ * @param {{labelSize, labelMargin, labelFormat, labelLine}} opts 
  * @param {*} config 
  * @param {*} context 
  */
@@ -155,9 +157,9 @@ export default function drawPieChart(context, series, opts, config) {
             data: item.data
         })
     })
-
+    let ratio = 1.3 // 用于控制标签显示相对于饼状图半径的距离比例
     let region = getRelativeRegion(width, height, 0, {bottom: bottomAreaHeight})
-    let pieRadius = opts.pieRadius || parseInt(Math.min(region.height, region.width) / 2 / 1.5)
+    let pieRadius = parseInt(Math.min(region.height, region.width) / 2 / ratio)
     let center = absoluteCoord([region.width >> 1 , region.height >> 1], region)
     console.log(pieRadius, center)
 
@@ -179,7 +181,7 @@ export default function drawPieChart(context, series, opts, config) {
         start += 2 * halfAngle
 
         let [xStart, yStart] = [pieRadius * Math.cos(angle), pieRadius * Math.sin(angle)]
-        let [xEnd, yEnd] = [1.5* pieRadius * Math.cos(angle),1.2 * pieRadius * Math.sin(angle)]
+        let [xEnd, yEnd] = [ratio * pieRadius * Math.cos(angle), ratio * pieRadius * Math.sin(angle)]
         if (xEnd >= 0) {
             // 右区间
             labelsRightQuarter.push({
