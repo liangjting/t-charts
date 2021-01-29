@@ -82,3 +82,4 @@ lineChart.feed(
 * bug fix
 * 重构整理代码
 * 动画效果
+* measureText 方法修改

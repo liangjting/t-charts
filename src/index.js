@@ -66,16 +66,16 @@ let pieChart = new Charts({
 pieChart.feed({
     data: [
         {
-            label: '中文pie1',
-            data: 2,
+            label: '中文pie',
+            data: 4,
         },
         {
             label: '中文pie2',
-            data: 43
+            data: 42
         },
         {
             label: 'pie1',
-            data: 5,
+            data: 12,
         },
         {
             label: 'pie2',
@@ -95,7 +95,7 @@ pieChart.feed({
         },
         {
             label: 'pie1',
-            data: 322,
+            data: 44,
         },
         {
             label: 'pie2',
