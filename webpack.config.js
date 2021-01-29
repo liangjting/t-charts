@@ -12,14 +12,15 @@ if (process.env.NODE_ENV === 'production') {
     output['libraryTarget'] = 'umd'
 }
 
-const banner = `@author: ljt
+const banner = 
+`@author: ljt
 @date: ${new Date()}`
 module.exports = {
     // entry: './src/index.js',
     mode: 'development',
     entry: {
         index: './src/index.js',
-        'my-charts': './src/app.js'
+        't-charts': './src/app.js'
     },
     output,
     module: {
