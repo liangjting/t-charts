@@ -1,4 +1,4 @@
-import { measureText, getRelativeRegion, absoluteCoord } from '@/components/utils'
+import { getRelativeRegion, absoluteCoord } from '@/components/utils'
 import drawLegend from './drawLegend'
 /**
  * series: [
@@ -26,7 +26,7 @@ function getXpoint([ax1, ay1], [ax2, ay2], [bx1, by1], y) {
 function distance([x1, y1], [x2, y2]) {
     return Math.sqrt(Math.pow(x2- x1, 2) + Math.pow(y2 - y1, 2))
 }
- function adjustLabels({labelsLeftQuarter, labelsRightQuarter}, center, pieRadius, opts) {
+ function adjustLabels({labelsLeftQuarter, labelsRightQuarter}, center, pieRadius, opts, region, context) {
     let textPadding = 2
     let textSize = opts.labelSize || 10
     let quarters = [0, 0, 0, 0] //顺时针
@@ -55,7 +55,7 @@ function distance([x1, y1], [x2, y2]) {
             
             let restHeight = quarterHeight - (labelLen - i - 1) * textSize - yEnd - padding
             // console.log('restH: ' + restHeight, quarterHeight)
-            if (restHeight <= 0) {
+            if (restHeight < 0) {
                 // console.log('oversize', restHeight)
                 yEnd += restHeight
                 if (yEnd < prev.lineEnd[1] || Math.abs(yEnd - prev.lineEnd[1] < textSize)) {
@@ -66,12 +66,28 @@ function distance([x1, y1], [x2, y2]) {
             }
         }
         // console.log(i, yEnd, prev.lineEnd[1], d)
+
+        // 检查文字显示是否会溢出，尽可能显示完全部文字
+        let labelWidth = context.measureText(item.label).width
+        xEnd += textSize
+        if (labelWidth + xEnd + textPadding > region.right) {
+            xEnd = region.right - labelWidth - textPadding
+            xEnd = xEnd < item.lineStart[0] ? item.lineStart[0] : xEnd
+        }
+        let cpx
+        // 检查文字是否显示在圆饼内，是则将其移到圆饼外
         if (distance(center, [xEnd, yEnd]) <= pieRadius) {
             // console.log('text in the pie')
-            xEnd = Math.sqrt(pieRadius * pieRadius - (yEnd - center[1]) * (yEnd - center[1])) + center[0]
+            xEnd = Math.sqrt(pieRadius * pieRadius - (yEnd - center[1]) * (yEnd - center[1])) + center[0] + textSize
+            cpx = xEnd
+        } else {
+            cpx = (item.lineStart[0] + xEnd) / 2
         }
-        item.lineEnd = [xEnd + textSize, yEnd]
-        item.textStart = [ xEnd + textSize + textPadding, yEnd]
+        item.lineEnd = [xEnd, yEnd]
+        item.textStart = [ xEnd + textPadding, yEnd]
+        
+        let cpy = item.lineEnd[1] + (item.lineStart[1] >= center[1] ? (textSize / 2) : (-textSize / 2))
+        item.cp = [cpx, cpy] // 二次贝塞尔曲线参数
     }
     // let count = 0
     // labelsRightQuarter.forEach(item => {
@@ -105,7 +121,7 @@ function distance([x1, y1], [x2, y2]) {
             d = (yEnd - prev.lineEnd[1])
             // console.log(i, prev.lineEnd[1], yEnd, d)
             // console.log('restH: ' + restHeight, quarterHeight)
-            if (restHeight <= 0) {
+            if (restHeight < 0) {
                 // console.log('oversize', restHeight)
                 yEnd += restHeight
                 if (yEnd < prev.lineEnd[1] || Math.abs(yEnd - prev.lineEnd[1] < textSize)) {
@@ -117,17 +133,26 @@ function distance([x1, y1], [x2, y2]) {
             }
         }
         // console.log(i, yEnd, prev.lineEnd[1], d)
-        
+        xEnd -= textSize
+        let labelWidth = context.measureText(item.label).width
+        if (labelWidth + textSize + textPadding > xEnd) {
+            xEnd = labelWidth + textSize + textPadding
+            xEnd = xEnd > item.lineStart[0] ? item.lineStart[0] : xEnd
+        }
         // item.end = [xDirect, yDirect]
+        let cpx
         if (distance(center, [xEnd, yEnd]) <= pieRadius) {
             console.log('text in the pie')
-            xEnd = center[0] - Math.sqrt(pieRadius * pieRadius - (yEnd - center[1]) * (yEnd - center[1]))
-            console.log(xEnd)
+            xEnd = center[0] - Math.sqrt(pieRadius * pieRadius - (yEnd - center[1]) * (yEnd - center[1])) - textSize
+            cpx = xEnd
+        } else {
+            cpx = (item.lineStart[0] + xEnd) / 2
         }
-        item.lineEnd = [xEnd - textSize, yEnd]
-        item.textStart = [ xEnd - textSize - textPadding, yEnd]
-        // item.lineEnd = [xDirect > 0 ? (xEnd + textSize) : (xEnd - textSize), yEnd]
-        // item.textStart = [ xDirect > 0 ? (item.textStart[0] + textSize) : (item.textStart[0] - textSize), yEnd]
+        item.lineEnd = [xEnd, yEnd]
+        item.textStart = [ xEnd - textPadding, yEnd]
+        // let cpx = item.lineEnd[0]// (item.lineStart[0] + item.lineEnd[0]) / 2
+        let cpy = item.lineEnd[1] + (item.lineStart[1] >= center[1] ? (textSize / 2) : (-textSize / 2))
+        item.cp = [cpx, cpy]
     }
     return [...labelsRightQuarter, ...labelsLeftQuarter]
  }
@@ -209,7 +234,7 @@ export default function drawPieChart(context, series, opts, config) {
         }
     }
 
-    let labels = adjustLabels({labelsRightQuarter, labelsLeftQuarter}, center, pieRadius, opts)
+    let labels = adjustLabels({labelsRightQuarter, labelsLeftQuarter}, center, pieRadius, opts, region, context)
     console.log(labels)
     context.fillStyle = 'black'
     context.lineWidth = 1
@@ -224,9 +249,7 @@ export default function drawPieChart(context, series, opts, config) {
         if (opts.labelLine == 'straight') {
             context.lineTo(...item.lineEnd)
         } else {
-            let cpx = (item.lineStart[0] + item.lineEnd[0]) / 2
-            let cpy = item.lineEnd[1] + (item.lineEnd[1] >= center[1] ? (labelSize / 2) : (-labelSize / 2))
-            context.quadraticCurveTo(cpx, cpy, ...item.lineEnd)
+            context.quadraticCurveTo(...item.cp, ...item.lineEnd)
         }
         context.stroke()
         context.textAlign = item.textAlign
