@@ -3,6 +3,8 @@
 
 代码未经整理比较乱，详细使用，参考sr/index.js 例子文件
 
+可打开 dist/index.html 查看例程显示效果
+
 可直接使用 dist/t-charts.js
 # 安装编译
 clone 仓库下来后，进入根目录运行
