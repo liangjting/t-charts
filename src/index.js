@@ -104,6 +104,45 @@ pieChart.feed({
     ]
 })
 
+let ringChart = new Charts({
+    canvasId: 'ring',
+    type: 'ring',
+    labelSize: 14,
+})
+ringChart.feed({
+    data: [
+        {
+            label: 'pie1',
+            data: 2,
+        },
+        {
+            label: 'pie2',
+            data: 4
+        },
+        {
+            label: 'pie1',
+            data: 5,
+        },
+        {
+            label: 'pie2',
+            data: 42
+        },
+        {
+            label: 'pie2',
+            data: 4
+        },
+        {
+            label: 'pie1',
+            data: 23,
+        },
+        {
+            label: 'pie2',
+            data: 4
+        },
+
+    ]
+})
+
 // line
 let lineChart = new Charts({
     canvasId: 'line',
