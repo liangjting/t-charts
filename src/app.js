@@ -5,6 +5,7 @@ import drawPieChart from '@/components/drawPieChart'
 import drawLineChart from '@/components/drawLineChart'
 import drawBarChart from '@/components/drawBarChart'
 import drawStackbarChart from '@/components/drawStackbarChart'
+import drawRingChart from '@/components/drawRingChart'
 
 export function Charts(opts={}) {
     this.ready = false
@@ -65,6 +66,9 @@ Charts.prototype.draw = function () {
             break
         case 'stack-bar':
             drawStackbarChart(this.context, this.chartData.data, this.opts, Config)
+            break
+        case 'ring':
+            drawRingChart(this.context, this.chartData.data, this.opts, Config)
             break
         default:
             break
