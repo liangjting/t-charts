@@ -77,3 +77,8 @@ lineChart.feed(
     ]
 )
 ```
+
+# TODO
+* bug fix
+* 重构整理代码
+* 动画效果
