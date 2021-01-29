@@ -6,6 +6,7 @@ import drawLineChart from '@/components/drawLineChart'
 import drawBarChart from '@/components/drawBarChart'
 import drawStackbarChart from '@/components/drawStackbarChart'
 import drawRingChart from '@/components/drawRingChart'
+import { measureText } from '@/components/utils.js'
 
 export function Charts(opts={}) {
     this.ready = false
@@ -44,6 +45,13 @@ export function Charts(opts={}) {
     }
     this.type = opts.type || ''
     this.chartData = opts.chartData || {}
+    if (this.context.measureText === undefined) {
+        this.context.measureText = function (text) {
+            let fontSize = /(\d+)px/.test(this.font) ? parseInt(RegExp.$1) : 10
+            let width = measureText(text, fontSize)
+            return { width }
+        }
+    }
 }
 
 Charts.prototype.draw = function () {
