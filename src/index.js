@@ -56,6 +56,7 @@ let pieChart = new Charts({
         return (val * 100 / sum).toFixed(1) + '% ' + label
     },
     labelSize: 12,
+    labelMargin: 2, // label 之间最小间隔距离
     // labelLine: 'straight',
     chartData: {
 
@@ -65,11 +66,11 @@ let pieChart = new Charts({
 pieChart.feed({
     data: [
         {
-            label: 'pie1',
+            label: '中文pie1',
             data: 2,
         },
         {
-            label: 'pie2',
+            label: '中文pie2',
             data: 43
         },
         {
@@ -113,7 +114,7 @@ ringChart.feed({
     data: [
         {
             label: 'pie1',
-            data: 2,
+            data: 4,
         },
         {
             label: 'pie2',
@@ -121,24 +122,32 @@ ringChart.feed({
         },
         {
             label: 'pie1',
-            data: 5,
-        },
-        {
-            label: 'pie2',
-            data: 42
+            data: 4,
         },
         {
             label: 'pie2',
             data: 4
         },
-        {
-            label: 'pie1',
-            data: 23,
-        },
-        {
-            label: 'pie2',
-            data: 4
-        },
+        // {
+        //     label: 'pie1',
+        //     data: 5,
+        // },
+        // {
+        //     label: 'pie2',
+        //     data: 42
+        // },
+        // {
+        //     label: 'pie2',
+        //     data: 4
+        // },
+        // {
+        //     label: 'pie1',
+        //     data: 23,
+        // },
+        // {
+        //     label: 'pie2',
+        //     data: 4
+        // },
 
     ]
 })
