@@ -6,6 +6,7 @@ import drawLineChart from '@/components/drawLineChart'
 import drawBarChart from '@/components/drawBarChart'
 import drawStackbarChart from '@/components/drawStackbarChart'
 import drawRingChart from '@/components/drawRingChart'
+import drawKAvgChart from '@/components/drawKAvgChart'
 import { measureText } from '@/components/utils.js'
 
 export function Charts(opts={}) {
@@ -84,6 +85,9 @@ Charts.prototype.draw = function () {
             break
         case 'ring':
             drawPieChart(this.context, this.chartData.data, this.opts, Config)
+            break
+        case 'k-avg':
+            drawKAvgChart(this.context, this.chartData.data, this.opts, Config)
             break
         default:
             break
