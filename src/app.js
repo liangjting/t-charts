@@ -26,6 +26,13 @@ export function Charts(opts={}) {
             this.context = ctx
             this.context.scale(dpr, dpr)
             this.opts.dpr = dpr
+            if (this.context.measureText === undefined) {
+                this.context.measureText = function (text) {
+                    let fontSize = /(\d+)px/.test(this.font) ? parseInt(RegExp.$1) : 10
+                    let width = measureText(text, fontSize)
+                    return { width }
+                }
+            }
             this.ready = true
             typeof this.onReady === 'function' && this.onReady()
             console.log(this)
@@ -42,16 +49,16 @@ export function Charts(opts={}) {
         this.context.scale(dpr, dpr)
         this.opts.dpr = dpr
         this.ready = true
+        if (this.context.measureText === undefined) {
+            this.context.measureText = function (text) {
+                let fontSize = /(\d+)px/.test(this.font) ? parseInt(RegExp.$1) : 10
+                let width = measureText(text, fontSize)
+                return { width }
+            }
+        }
     }
     this.type = opts.type || ''
     this.chartData = opts.chartData || {}
-    if (this.context.measureText === undefined) {
-        this.context.measureText = function (text) {
-            let fontSize = /(\d+)px/.test(this.font) ? parseInt(RegExp.$1) : 10
-            let width = measureText(text, fontSize)
-            return { width }
-        }
-    }
 }
 
 Charts.prototype.draw = function () {
@@ -76,7 +83,7 @@ Charts.prototype.draw = function () {
             drawStackbarChart(this.context, this.chartData.data, this.opts, Config)
             break
         case 'ring':
-            drawRingChart(this.context, this.chartData.data, this.opts, Config)
+            drawPieChart(this.context, this.chartData.data, this.opts, Config)
             break
         default:
             break

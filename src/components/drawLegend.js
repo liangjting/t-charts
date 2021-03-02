@@ -43,7 +43,7 @@ export default function drawLegend(context, series, region, opts) {
             context.fillRect(p[0] - (markWidth >> 1), p[1] - (markWidth >> 1), markWidth, markWidth)
         }
 
-        context.fillStyle = 'gray'
+        context.fillStyle = opts.legendLabelColor || 'gray'
         context.fillText(item.label, ...absoluteCoord(textCoord, region))
     }
 }

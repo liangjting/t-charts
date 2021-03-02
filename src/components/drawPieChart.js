@@ -30,12 +30,13 @@ function distance([x1, y1], [x2, y2]) {
     let textPadding = 2
     let textSize = opts.labelSize || 10
     let quarters = [0, 0, 0, 0] //顺时针
-    let padding = textSize >> 1
+    let padding = textSize
     let labelMargin = opts.labelMargin || 1
+    context.font = `${textSize}px sans-serif`
     textSize += labelMargin
-    
     let quarterHeight = opts.height
     let labelLen = labelsRightQuarter.length
+    
     for (let i = 0; i < labelLen; i++) {
         let item = labelsRightQuarter[i]
         let [xEnd,yEnd] = item.lineEnd
@@ -71,6 +72,7 @@ function distance([x1, y1], [x2, y2]) {
         let labelWidth = context.measureText(item.label).width
         xEnd += textSize
         if (labelWidth + xEnd + textPadding > region.right) {
+            // console.log('text overflow r', item.label, labelWidth)
             xEnd = region.right - labelWidth - textPadding
             xEnd = xEnd < item.lineStart[0] ? item.lineStart[0] : xEnd
         }
@@ -135,8 +137,9 @@ function distance([x1, y1], [x2, y2]) {
         // console.log(i, yEnd, prev.lineEnd[1], d)
         xEnd -= textSize
         let labelWidth = context.measureText(item.label).width
-        if (labelWidth + textSize + textPadding > xEnd) {
-            xEnd = labelWidth + textSize + textPadding
+        if (labelWidth + textPadding > xEnd) {
+            // console.log('text overflow l', item.label, labelWidth)
+            xEnd = labelWidth + textPadding
             xEnd = xEnd > item.lineStart[0] ? item.lineStart[0] : xEnd
         }
         // item.end = [xDirect, yDirect]
@@ -167,6 +170,8 @@ function distance([x1, y1], [x2, y2]) {
 export default function drawPieChart(context, series, opts, config) {
     let sum = 0
     let { width, height } = opts
+    let chartType = opts.type
+    let ringWidth = opts.ringWidth || 16
     let legends = []
     let bottomAreaHeight = 0
     let textPadding = 2
@@ -196,12 +201,20 @@ export default function drawPieChart(context, series, opts, config) {
     for (let item of series) {
         let halfAngle = Math.PI * item.data / sum
         context.fillStyle = item.color
-        context.beginPath()
-        context.moveTo(...center)
-        context.arc(...center, pieRadius, start, 2 * halfAngle + start)
-        context.closePath()
-        context.fill()
-        context.stroke()
+        if (chartType == 'ring') {
+            context.strokeStyle = item.color
+            context.lineWidth = ringWidth
+            context.beginPath()
+            context.arc(...center, pieRadius - ringWidth/2, start, 2 * halfAngle + start)
+            context.stroke()
+        } else {
+            context.beginPath()
+            context.moveTo(...center)
+            context.arc(...center, pieRadius, start, 2 * halfAngle + start)
+            context.closePath()
+            context.fill()
+            context.stroke()
+        }
         let angle = start + halfAngle
         start += 2 * halfAngle
 

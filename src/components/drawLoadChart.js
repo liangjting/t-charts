@@ -27,10 +27,11 @@ function drawLoadChart(chart, config) {
     let padding = config.padding || 5
     let textPadding = config.textPadding || 0
     let loadChartData = chart.chartData.data || []
-    let bottomAreaHeight = 40
+    let bottomAreaHeight = chart.opts.legend === false ? 16 : 40
     let leftArea = 40
     let chartArea = getRelativeRegion(width, height, padding, {bottom: bottomAreaHeight, left: 0})
-    console.log(chartArea)
+    // console.log(chartArea)
+    let xLabelFormat = chart.opts.xLabelFormat
     context.clearRect(0, 0, width, height)
     
     context.lineWidth = 1
@@ -67,12 +68,13 @@ function drawLoadChart(chart, config) {
     context.textBaseline = 'top'
     context.textAlign = 'center'
     context.strokeStyle = 'gray'
+    context.fillStyle = 'gray'
     for (let i = 0; i * xAxisOffset < chartArea.width; i++) {
         context.beginPath()
         context.moveTo(i * xAxisOffset + chartArea.left, chartArea.bottom + 1)
         context.lineTo(i * xAxisOffset + chartArea.left, chartArea.bottom + 4)
         context.stroke()
-        context.fillText(i * scale, i * xAxisOffset + chartArea.left, chartArea.bottom + textPadding + 4)
+        context.fillText(xLabelFormat ? xLabelFormat(i * scale) : (i * scale), i * xAxisOffset + chartArea.left, chartArea.bottom + textPadding + 4)
     }
     
     // draw load span
@@ -90,8 +92,11 @@ function drawLoadChart(chart, config) {
     }
 
     // 绘制图示
-    let legendRegion = getRelativeRegion(width, height, padding, {top: height - bottomAreaHeight + 20})
-    drawLegend(context, series, legendRegion, {markWidth: 10, legendFontsize: 14})
+    if (chart.opts.legend !== false) {
+        let legendRegion = getRelativeRegion(width, height, padding, {top: height - bottomAreaHeight + 20})
+        drawLegend(context, series, legendRegion, {markWidth: 10, legendFontsize: 14})
+    }
+    
 }
 
 export default drawLoadChart

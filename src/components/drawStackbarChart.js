@@ -27,13 +27,14 @@ export default function drawStackbarChart(context, series, opts, config) {
     let barHalfWidth = (opts.barWidth || 16) >> 1
     let {width, height, bottom} = result.region
     let yMax = result.yMax
+    let colors = opts.colors || config.colors
     xLabels = result.xLabels
     for (let [i, item] of Object.entries(series)) {
         let total = 0
         for (let [j, num] of Object.entries(item.data)) {
             total += num
             bars.push({
-                color: config.colors[j % config.colors.length],
+                color: colors[j % colors.length],
                 data: [xLabels[i][0] - barHalfWidth, bottom - total / yMax * height, barHalfWidth * 2, num / yMax * height]
             })
         }
@@ -45,12 +46,12 @@ export default function drawStackbarChart(context, series, opts, config) {
     if (opts.legends && opts.legends.length > 0) {
         let legends = opts.legends.map((item, index) => {
             return {
-                color: config.colors[index % config.colors.length],
+                color: colors[index % colors.length],
                 label: item
             }
         })
         let legendRegion = getRelativeRegion(opts.width, opts.height, 0, {left: 30, top: opts.height - bottomAreaHeight})
-        drawLegend(context, legends, legendRegion, {markWidth: 12, legendFontsize: 14, shape: 'rect'})
+        drawLegend(context, legends, legendRegion, {markWidth: 12, legendFontsize: 14, shape: 'rect', ...opts})
     }
     
 }
