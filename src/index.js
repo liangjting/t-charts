@@ -273,3 +273,27 @@ stackBar.feed({
     ]
 })
 
+const kAvgChart = new Charts({
+    canvasId: 'k-avg',
+    type: 'k-avg',
+})
+
+kAvgChart.feed([
+    {
+        label: '周一',
+        data: [2, 4, 3]
+    },
+    {
+        label: '周二',
+        data: [3, 5, 3.4]
+    },
+    {
+        label: '周二',
+        data: [1, 7, 2]
+    },
+    {
+        label: '周四',
+        data: [4, 8, 7]
+    }
+])
+
