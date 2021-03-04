@@ -60,6 +60,7 @@ export function Charts(opts={}) {
     }
     this.type = opts.type || ''
     this.chartData = opts.chartData || {}
+    this.opts.xOffset = 0
 }
 
 Charts.prototype.draw = function () {
@@ -108,5 +109,29 @@ Charts.prototype.feed = function(data = {}) {
         }
     }
 }
+
+Charts.prototype.scrollBy = function(offset=0) {
+    // console.log('scrollBy')
+    if (offset != 0) {
+        let pos = this.opts.xOffset + offset
+        pos = pos > 0 ? 0 : pos
+        if (this.opts.chartWidth && this.opts.chartViewportWidth) {
+            if (pos < this.opts.chartViewportWidth - this.opts.chartWidth) {
+                pos = this.opts.chartViewportWidth - this.opts.chartWidth
+            }
+        }
+        if (this.opts.xOffset != pos) {
+            this.opts.xOffset = pos
+            if (this.ready) {
+                this.draw()
+            } else {
+                this.onReady = () => {
+                    this.draw()
+                }
+            }
+        }
+    }
+}
+
 
 export default Charts
