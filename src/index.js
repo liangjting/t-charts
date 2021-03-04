@@ -276,9 +276,133 @@ stackBar.feed({
 const kAvgChart = new Charts({
     canvasId: 'k-avg',
     type: 'k-avg',
+    xLabelMinWidth: 40,
+})
+
+let scrollStart = false
+let clientXStart = 0
+document.querySelector('#k-avg').addEventListener('mousedown', function(ev) {
+    console.log('mousedown', ev)
+    clientXStart = ev.clientX
+    scrollStart = true
+})
+document.querySelector('#k-avg').addEventListener('mouseup', function(ev) {
+    scrollStart = false
+    // console.log('mouseup', ev)
+    // kAvgChart.endScroll()
+})
+document.querySelector('#k-avg').addEventListener('mouseout', function(ev) {
+    scrollStart = false
+    // console.log('mouseup', ev)
+    // kAvgChart.endScroll()
+})
+document.querySelector('#k-avg').addEventListener('mousemove', function(ev) {
+    // console.log('mouse move', ev)
+    if (scrollStart) {
+        let scrollX = ev.clientX - clientXStart
+        // console.log('scrollX', scrollX)
+        kAvgChart.scrollBy(scrollX)
+        clientXStart = ev.clientX
+    }
 })
 
 kAvgChart.feed([
+    {
+        label: '周一',
+        data: [2, 4, 3]
+    },
+    {
+        label: '周二',
+        data: [3, 5, 3.4]
+    },
+    {
+        label: '周二',
+        data: [1, 7, 2]
+    },
+    {
+        label: '周四',
+        data: [4, 8, 7]
+    },
+    {
+        label: '周一',
+        data: [2, 4, 3]
+    },
+    {
+        label: '周二',
+        data: [3, 5, 3.4]
+    },
+    {
+        label: '周二',
+        data: [1, 7, 2]
+    },
+    {
+        label: '周四',
+        data: [4, 8, 7]
+    },
+    {
+        label: '周一',
+        data: [2, 4, 3]
+    },
+    {
+        label: '周二',
+        data: [3, 5, 3.4]
+    },
+    {
+        label: '周二',
+        data: [1, 7, 2]
+    },
+    {
+        label: '周四',
+        data: [4, 8, 7]
+    },
+    {
+        label: '周一',
+        data: [2, 4, 3]
+    },
+    {
+        label: '周二',
+        data: [3, 5, 3.4]
+    },
+    {
+        label: '周二',
+        data: [1, 7, 2]
+    },
+    {
+        label: '周四',
+        data: [4, 8, 7]
+    },
+    {
+        label: '周一',
+        data: [2, 4, 3]
+    },
+    {
+        label: '周二',
+        data: [3, 5, 3.4]
+    },
+    {
+        label: '周二',
+        data: [1, 7, 2]
+    },
+    {
+        label: '周四',
+        data: [4, 8, 7]
+    },
+    {
+        label: '周一',
+        data: [2, 4, 3]
+    },
+    {
+        label: '周二',
+        data: [3, 5, 3.4]
+    },
+    {
+        label: '周二',
+        data: [1, 7, 2]
+    },
+    {
+        label: '周四',
+        data: [4, 8, 7]
+    },
     {
         label: '周一',
         data: [2, 4, 3]
