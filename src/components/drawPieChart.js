@@ -36,7 +36,6 @@ function distance([x1, y1], [x2, y2]) {
     textSize += labelMargin
     let quarterHeight = opts.height
     let labelLen = labelsRightQuarter.length
-    
     for (let i = 0; i < labelLen; i++) {
         let item = labelsRightQuarter[i]
         let [xEnd,yEnd] = item.lineEnd
@@ -45,16 +44,16 @@ function distance([x1, y1], [x2, y2]) {
         if (yEnd < padding) {
             yEnd = padding
         }
+        let restHeight = quarterHeight - (labelLen - i - 1) * textSize - yEnd - padding
         if (i == 0) {
-            if (quarterHeight - (labelLen - i - 1) * textSize - yEnd <= 0) {
-                yEnd = padding
+            if (restHeight < 0) {
+                yEnd += restHeight
             }
         } else {
             let prev = labelsRightQuarter[i - 1]
             d = (yEnd - prev.lineEnd[1])
             // console.log(i, prev.lineEnd[1], yEnd, d)
             
-            let restHeight = quarterHeight - (labelLen - i - 1) * textSize - yEnd - padding
             // console.log('restH: ' + restHeight, quarterHeight)
             if (restHeight < 0) {
                 // console.log('oversize', restHeight)
@@ -115,8 +114,8 @@ function distance([x1, y1], [x2, y2]) {
         }
         let restHeight = quarterHeight - (labelLen - i - 1) * textSize - yEnd - padding
         if (i == 0) {
-            if (restHeight <= 0) {
-                yEnd = padding
+            if (restHeight < 0) {
+                yEnd += restHeight
             }
         } else {
             let prev = labelsLeftQuarter[i - 1]
@@ -145,7 +144,7 @@ function distance([x1, y1], [x2, y2]) {
         // item.end = [xDirect, yDirect]
         let cpx
         if (distance(center, [xEnd, yEnd]) <= pieRadius) {
-            console.log('text in the pie')
+            console.log('text in the pie l')
             xEnd = center[0] - Math.sqrt(pieRadius * pieRadius - (yEnd - center[1]) * (yEnd - center[1])) - textSize
             cpx = xEnd
         } else {
