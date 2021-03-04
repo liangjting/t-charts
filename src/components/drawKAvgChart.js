@@ -45,8 +45,13 @@ export default function drawKAvgChart(context, series, opts, config) {
     let padding = config.padding || 0
     let bottomAreaHeight = 2
     let chartRegion = getRelativeRegion(opts.width, opts.height, padding, {bottom: bottomAreaHeight, left: 0})
+    
+    opts.labelOpt = 'yaxis'
     let result = drawAxis(context, axis, chartRegion, opts, config)
-
+    
+    // 记录图表长度和视图宽度
+    opts.chartWidth = result.chartWidth
+    opts.chartViewportWidth = result.region.width
     let bars = []
     let avgPoints = []
     let barWidth = (opts.barWidth || 16)
@@ -66,6 +71,19 @@ export default function drawKAvgChart(context, series, opts, config) {
         })
     }
     // console.log(bars)
+    context.save()
+    if (result.chartWidth > width && opts.xOffset != undefined) {
+        if (opts.xOffset < width - result.chartWidth) {
+            opts.xOffset = width - result.chartWidth
+        }
+        context.translate(opts.xOffset, 0)
+    }
+    opts.labelOpt = 'xl'
+    drawAxis(context, axis, chartRegion, opts, config)
     darwBars(context, bars)
     drawLine(context, avgPoints)
+    context.restore()
+    context.clearRect(0, 0, result.region.left, opts.height)
+    opts.labelOpt = 'yl'
+    drawAxis(context, axis, chartRegion, opts, config)
 }
