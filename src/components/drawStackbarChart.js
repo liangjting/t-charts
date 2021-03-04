@@ -16,30 +16,52 @@ export default function drawStackbarChart(context, series, opts, config) {
         return [item.label, item.data.reduce((a, b) => a + b, 0)]
     })
     opts.xLabels = xLabels
-    let axis = calcAxisSeries(arr, opts)
-    // let region = getRelativeRegion(opts.width, opts.height)
+    let separateBar = opts.separateBar || false
+    let barWidth = opts.barWidth || 16
+    let barHalfWidth = parseInt(barWidth / 2)
     let padding = config.padding || 0
     let bottomAreaHeight = 20
+    let colors = opts.colors || config.colors
     let chartRegion = getRelativeRegion(opts.width, opts.height, padding, {bottom: bottomAreaHeight, left: 0})
+    let barsPerItem = (series[0] && series[0].data.length) || 1
+    let barMargin = opts.barMargin || 0
+    if (separateBar) {
+        opts.xLabelMinWidth = opts.xLabelMinWidth || (barWidth * (barsPerItem + 1) + barMargin * (barsPerItem - 1))
+    }
+
+
+    let axis = calcAxisSeries(arr, opts)
     let result = drawAxis(context, axis, chartRegion, opts, config)
-    console.log(result)
+    // console.log(result)
     let bars = []
-    let barHalfWidth = (opts.barWidth || 16) >> 1
     let {width, height, bottom} = result.region
     let yMax = result.yMax
-    let colors = opts.colors || config.colors
     xLabels = result.xLabels
-    for (let [i, item] of Object.entries(series)) {
-        let total = 0
-        for (let [j, num] of Object.entries(item.data)) {
-            total += num
-            bars.push({
-                color: colors[j % colors.length],
-                data: [xLabels[i][0] - barHalfWidth, bottom - total / yMax * height, barHalfWidth * 2, num / yMax * height]
-            })
+    if (separateBar) {
+        let offset = (barWidth * barsPerItem + barMargin * (barsPerItem - 1)) / 2
+        for (let [i, item] of Object.entries(series)) {
+            let total = 0
+            for (let [j, num] of Object.entries(item.data)) {
+                total += num
+                bars.push({
+                    color: colors[j % colors.length],
+                    data: [xLabels[i][0] - offset + j * (barWidth + barMargin), bottom - num / yMax * height, barHalfWidth * 2, num / yMax * height]
+                })
+            }
+        }
+    } else {
+        for (let [i, item] of Object.entries(series)) {
+            let total = 0
+            for (let [j, num] of Object.entries(item.data)) {
+                total += num
+                bars.push({
+                    color: colors[j % colors.length],
+                    data: [xLabels[i][0] - barHalfWidth, bottom - total / yMax * height, barHalfWidth * 2, num / yMax * height]
+                })
+            }
         }
     }
-    console.log(bars)
+    // console.log(bars)
     darwBars(context, bars)
 
     // 绘制图示
