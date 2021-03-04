@@ -16,10 +16,15 @@ export default function drawBarChart(context, series, opts, config) {
     })
     opts.xLabels = xLabels
     let axis = calcAxisSeries(arr, opts)
-    let region = getRelativeRegion(opts.width, opts.height)
-    let result = drawAxis(context, axis, region, opts, config)
+    let chartRegion = getRelativeRegion(opts.width, opts.height)
+    // let result = drawAxis(context, axis, region, opts, config)
     // console.log(result)
-
+    opts.labelOpt = 'yaxis' // 横向轴线
+    let result = drawAxis(context, axis, chartRegion, opts, config)
+    
+    // 记录图表长度和视图宽度
+    opts.chartWidth = result.chartWidth
+    opts.chartViewportWidth = result.region.width
     let bars = []
     let barHalfWidth = (opts.barWidth || 16) >> 1
     let {width, height, bottom} = result.region
@@ -31,6 +36,20 @@ export default function drawBarChart(context, series, opts, config) {
             data: [xLabels[i][0] - barHalfWidth, bottom - item.data / yMax * height, barHalfWidth * 2, item.data / yMax * height]
         })
     }
-    console.log(bars)
+    // console.log(bars)
+
+    context.save()
+    if (result.chartWidth > width && opts.xOffset != undefined) {
+        if (opts.xOffset < width - result.chartWidth) {
+            opts.xOffset = width - result.chartWidth
+        }
+        context.translate(opts.xOffset, 0)
+    }
+    opts.labelOpt = 'xl'
+    drawAxis(context, axis, chartRegion, opts, config)
     darwBars(context, bars)
+    context.restore()
+    context.clearRect(0, 0, result.region.left, opts.height)
+    opts.labelOpt = 'yl'
+    drawAxis(context, axis, chartRegion, opts, config)
 }
