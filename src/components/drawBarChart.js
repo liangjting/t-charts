@@ -32,7 +32,7 @@ export default function drawBarChart(context, series, opts, config) {
     xLabels = result.xLabels
     for (let [i, item] of Object.entries(series)) {
         bars.push({
-            color: item.color || 'red',
+            color: item.color || opts.color || 'red',
             data: [xLabels[i][0] - barHalfWidth, bottom - item.data / yMax * height, barHalfWidth * 2, item.data / yMax * height]
         })
     }
