@@ -143,27 +143,48 @@ export function drawAxis(context, axis, region, opts, config) {
     // context.moveTo(region.left + ylabelWidth, region.bottom - xlabelHeight)
     // context.lineTo(region.right, region.bottom - xlabelHeight)
     // context.stroke()
-    onePixelLine(context, region.left + ylabelWidth, region.bottom - xlabelHeight, region.right, region.bottom - xlabelHeight, opts.dpr)
+    // onePixelLine(context, region.left + ylabelWidth, region.bottom - xlabelHeight, region.right, region.bottom - xlabelHeight, opts.dpr)
     
     let cWidth = region.width - ylabelWidth
     let cHeight = region.height - xlabelHeight - 10
-    let xLabels = axis.xLabels.map(item => {
-        return [Math.round(region.left + ylabelWidth + cWidth * item[0]), item[1]]
-    })
+    let xLabelNum = axis.xLabels.length || 1
+    let xLabelWidth = cWidth / xLabelNum
+    let xLabelMinWidth = opts.xLabelMinWidth || xLabelWidth
+    let xLabels;
+    let chartWidth = cWidth
+    if (xLabelWidth < xLabelMinWidth) {
+        let offset = xLabelNum * xLabelMinWidth * ((axis.xLabels[0] && axis.xLabels[0][0]) || 0)
+        chartWidth = xLabelMinWidth * xLabelNum
+        xLabels = axis.xLabels.map((item, index) => {
+            return [Math.round(region.left + ylabelWidth + index * xLabelMinWidth + offset), item[1]]
+        })
+    } else {
+        xLabels = axis.xLabels.map(item => {
+            return [Math.round(region.left + ylabelWidth + cWidth * item[0]), item[1]]
+        })
+    }
+    
     let yLabels = axis.yLabels.map(item => {
         return [Math.round(region.bottom - xlabelHeight - item[0] * cHeight), item[1]]
     })
+
+    let showXlabel = opts.labelOpt ? /xl/.test(opts.labelOpt) : true
     context.fillStyle = opts.axisLabelColor || 'gray'
     context.textAlign = 'center'
     context.textBaseline = 'top'
-    for (let item of xLabels) {
-        // context.beginPath()
-        // context.moveTo(item[0], region.bottom - xlabelHeight)
-        // context.lineTo(item[0], region.bottom - xlabelHeight + markLen)
-        // context.stroke()
-        onePixelLine(context, item[0], region.bottom - xlabelHeight, item[0], region.bottom - xlabelHeight + markLen, opts.dpr)
-        context.fillText(item[1], item[0], region.bottom - xlabelHeight + markLen + textPadding)
+    if (showXlabel) {
+        for (let item of xLabels) {
+            // context.beginPath()
+            // context.moveTo(item[0], region.bottom - xlabelHeight)
+            // context.lineTo(item[0], region.bottom - xlabelHeight + markLen)
+            // context.stroke()
+            onePixelLine(context, item[0], region.bottom - xlabelHeight, item[0], region.bottom - xlabelHeight + markLen, opts.dpr)
+            context.fillText(item[1], item[0], region.bottom - xlabelHeight + markLen + textPadding)
+        }
     }
+
+    let showYaxis = opts.labelOpt ? /yaxis/.test(opts.labelOpt) : true
+    let showYlabel = opts.labelOpt ? /yl/.test(opts.labelOpt) : true
     context.strokeStyle = opts.axisColor || '#cccccc'
     context.textAlign = 'right'
     context.textBaseline = 'middle'
@@ -172,9 +193,10 @@ export function drawAxis(context, axis, region, opts, config) {
         // context.moveTo(region.left + ylabelWidth - markLen, item[0])
         // context.lineTo(region.right, item[0])
         // context.stroke()
-        onePixelLine(context, region.left + ylabelWidth, item[0], region.right, item[0], opts.dpr)
-        context.fillText(item[1], region.left + ylabelWidth - markLen - textPadding, item[0])
+        showYaxis && onePixelLine(context, region.left + ylabelWidth, item[0], region.right, item[0], opts.dpr)
+        showYlabel && context.fillText(item[1], region.left + ylabelWidth - markLen - textPadding, item[0])
     }
+    showYaxis && onePixelLine(context, region.left + ylabelWidth, region.bottom - xlabelHeight, region.right, region.bottom - xlabelHeight, opts.dpr)
     region = regionFrom(region, {
         top: 10,
         left: ylabelWidth,
@@ -185,6 +207,7 @@ export function drawAxis(context, axis, region, opts, config) {
         region,
         ...axis,
         xLabels,
-        yLabels
+        yLabels,
+        chartWidth
     }
 }
