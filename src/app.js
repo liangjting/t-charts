@@ -112,14 +112,17 @@ Charts.prototype.feed = function(data = {}) {
 
 Charts.prototype.scrollBy = function(offset=0) {
     // console.log('scrollBy')
-    if (offset != 0) {
+    if (this.opts.chartWidth && this.opts.chartViewportWidth && offset != 0) {
+        if (this.opts.chartWidth <= this.opts.chartViewportWidth) {
+            return
+        }
         let pos = this.opts.xOffset + offset
         pos = pos > 0 ? 0 : pos
-        if (this.opts.chartWidth && this.opts.chartViewportWidth) {
-            if (pos < this.opts.chartViewportWidth - this.opts.chartWidth) {
-                pos = this.opts.chartViewportWidth - this.opts.chartWidth
-            }
+        
+        if (pos < this.opts.chartViewportWidth - this.opts.chartWidth) {
+            pos = this.opts.chartViewportWidth - this.opts.chartWidth
         }
+        
         if (this.opts.xOffset != pos) {
             this.opts.xOffset = pos
             if (this.ready) {
