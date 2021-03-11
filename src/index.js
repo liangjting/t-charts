@@ -219,25 +219,26 @@ const barChart = new Charts({
     type: 'bar',
     xLabels: [],
     xLabelMinWidth: 200,
+    yValType: 'integer'
 })
 
 barChart.feed({
     data: [
         {
             label: '周一',
-            data: 4
+            data: 17
         },
         {
             label: '周二',
-            data: 7
+            data: 1
         },
         {
             label: '周二',
-            data: 8
+            data: 3
         },
         {
             label: '周四',
-            data: 12
+            data: 1
         }
     ]
 })
