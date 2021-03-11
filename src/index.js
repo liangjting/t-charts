@@ -218,6 +218,7 @@ const barChart = new Charts({
     canvasId: 'bar',
     type: 'bar',
     xLabels: [],
+    xLabelMinWidth: 200,
 })
 
 barChart.feed({
@@ -282,7 +283,7 @@ const kAvgChart = new Charts({
 let scrollStart = false
 let clientXStart = 0
 document.querySelector('#k-avg').addEventListener('mousedown', function(ev) {
-    console.log('mousedown', ev)
+    // console.log('mousedown', ev)
     clientXStart = ev.clientX
     scrollStart = true
 })
@@ -302,6 +303,49 @@ document.querySelector('#k-avg').addEventListener('mousemove', function(ev) {
         let scrollX = ev.clientX - clientXStart
         // console.log('scrollX', scrollX)
         kAvgChart.scrollBy(scrollX)
+        clientXStart = ev.clientX
+    }
+})
+
+document.querySelector('#bar').addEventListener('mousedown', function(ev) {
+    // console.log('mousedown', ev)
+    clientXStart = ev.clientX
+    scrollStart = true
+})
+document.querySelector('#bar').addEventListener('mouseup', function(ev) {
+    scrollStart = false
+    // console.log('mouseup', ev)
+    // kAvgChart.endScroll()
+})
+document.querySelector('#bar').addEventListener('mouseout', function(ev) {
+    scrollStart = false
+    // console.log('mouseup', ev)
+    // kAvgChart.endScroll()
+})
+document.querySelector('#bar').addEventListener('mousemove', function(ev) {
+    // console.log('mouse move', ev)
+    if (scrollStart) {
+        let scrollX = ev.clientX - clientXStart
+        // console.log('scrollX', scrollX)
+        barChart.scrollBy(scrollX)
+        clientXStart = ev.clientX
+    }
+})
+
+document.querySelector('#separate-stack-bar').addEventListener('mousedown', function(ev) {
+    clientXStart = ev.clientX
+    scrollStart = true
+})
+document.querySelector('#separate-stack-bar').addEventListener('mouseup', function(ev) {
+    scrollStart = false
+})
+document.querySelector('#separate-stack-bar').addEventListener('mouseout', function(ev) {
+    scrollStart = false
+})
+document.querySelector('#separate-stack-bar').addEventListener('mousemove', function(ev) {
+    if (scrollStart) {
+        let scrollX = ev.clientX - clientXStart
+        separateStackBar.scrollBy(scrollX)
         clientXStart = ev.clientX
     }
 })
@@ -421,3 +465,51 @@ kAvgChart.feed([
     }
 ])
 
+const separateStackBar = new Charts({
+    canvasId: 'separate-stack-bar',
+    type: 'stack-bar',
+    legends: ['清醒', '深睡', '浅睡'],
+    colors: ['#ff4975', '#01c412', '#bebebe'],
+    separateBar: true,
+    barMargin: 2,
+    yLabelFormat: (label) => {
+        return label + 'h'
+    }
+})
+
+separateStackBar.feed({
+    data: [
+        {
+            label: '周一',
+            data: [4, 2, 1]
+        },
+        {
+            label: '周二',
+            data: [3, 5, 2]
+        },
+        {
+            label: '周二',
+            data: [1, 7, 4]
+        },
+        {
+            label: '周四',
+            data: [8, 4, 1]
+        },
+        {
+            label: '周一',
+            data: [4, 2, 1]
+        },
+        {
+            label: '周二',
+            data: [3, 5, 2]
+        },
+        {
+            label: '周二',
+            data: [1, 7, 4]
+        },
+        {
+            label: '周四',
+            data: [8, 4, 1]
+        }
+    ]
+})
