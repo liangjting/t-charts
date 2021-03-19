@@ -186,6 +186,9 @@ export default function drawPieChart(context, series, opts, config) {
             data: item.data
         })
     })
+    series = series.filter((item) => {
+        return item.data > 0
+    })
     let ratio = 1.3 // 用于控制标签显示相对于饼状图半径的距离比例
     let region = getRelativeRegion(width, height, 0, {bottom: bottomAreaHeight})
     let pieRadius = parseInt(Math.min(region.height, region.width) / 2 / ratio)
