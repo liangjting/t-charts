@@ -2,10 +2,11 @@ import { drawAxis, calcAxisSeries} from './drawAxis'
 import { getRelativeRegion } from './utils'
 
 function drawLine(context, series) {
+    let pointRadius = 2
     for (let item of series) {
         context.beginPath()
         item.color && (context.fillStyle = item.color)
-        context.arc(...item.data, 3, 0, 2 * Math.PI)
+        context.arc(...item.data, pointRadius, 0, 2 * Math.PI)
         context.fill()
     }
     if (series.length > 1) {
@@ -61,12 +62,12 @@ export default function drawKAvgChart(context, series, opts, config) {
     xLabels = result.xLabels
     for (let [i, item] of Object.entries(series)) {
         bars.push({
-            color: item.color || '#32bbb0',
+            color: item.color || opts.color || '#32bbb0',
             data: [xLabels[i][0] - barHalfWidth, bottom - item.data[1] / yMax * height, barHalfWidth * 2, (item.data[1] - item.data[0]) / yMax * height],
             barWidth,
         })
         avgPoints.push({
-            color: item.lineColor || 'orange',
+            color: item.lineColor || opts.lineColor || 'orange',
             data: [xLabels[i][0], bottom - item.data[2] / yMax * height]
         })
     }
