@@ -53,18 +53,13 @@ function drawLoadChart(chart, config) {
         if (list.length > 0) {
             maxSpan = Math.max(list[list.length - 1][1], maxSpan)
         }
-        // context.textAlign = 'right'
-        // context.fillStyle = '#7e7e7e'
-        // context.font = `15px Microsoft YaHei`
-        // context.textBaseline = 'middle'
-        // context.fillText(loadChartData[i].label, leftArea - textPadding, chartArea.bottom - i * offset * chartArea.height - chartArea.height * offset * 0.5)
     }
     let scale = 1
     while (maxSpan / scale > 14) {
         scale++
     }
     let xAxisOffset = parseInt(chartArea.width / (maxSpan / scale))
-    console.log(xAxisOffset)
+    // console.log(xAxisOffset)
     context.textBaseline = 'top'
     context.textAlign = 'center'
     context.strokeStyle = 'gray'
@@ -94,7 +89,7 @@ function drawLoadChart(chart, config) {
     // 绘制图示
     if (chart.opts.legend !== false) {
         let legendRegion = getRelativeRegion(width, height, padding, {top: height - bottomAreaHeight + 20})
-        drawLegend(context, series, legendRegion, {markWidth: 10, legendFontsize: 14})
+        drawLegend(context, series, legendRegion, {markWidth: 10, legendFontsize: 14}, config)
     }
     
 }

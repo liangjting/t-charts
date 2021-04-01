@@ -6,7 +6,7 @@ import { measureText, regionFrom, onePixelLine } from './utils'
  * @param {{textpadding}} opts
  * @return {[]} result
  */
-export function calcAxisSeries(series, opts={}) {
+export function calcAxisSeries(series, opts={}, config={}) {
     let result = {}
     let n = series.length
     let xLabelNum = opts.xLabelNum || 10
@@ -108,7 +108,7 @@ export function calcAxisSeries(series, opts={}) {
     }
     
     let xLabelHeight = 20
-    let fontSize = opts.axisFontSize || 10 
+    let fontSize = opts.axisFontSize || config.axisFontSize || 10
     let yLabelWidth = yLabels.reduce((a, b) => Math.max(measureText(b[1], fontSize), a), 0)
     return {
         xLabels,
@@ -136,7 +136,7 @@ export function drawAxis(context, axis, region, opts, config) {
     let markLen = 3
     let textPadding = 4
     let lineWidth = 1
-    let fontSize = opts.axisFontSize || 10
+    let fontSize = opts.axisFontSize || config.axisFontSize || 10
     // let axis = calcAxisSeries(series, region, opts)
     // console.log(axis)
     let xlabelHeight = Math.ceil(axis.xLabelHeight) + markLen + textPadding
@@ -175,7 +175,7 @@ export function drawAxis(context, axis, region, opts, config) {
     })
 
     let showXlabel = opts.labelOpt ? /xl/.test(opts.labelOpt) : true
-    context.fillStyle = opts.axisLabelColor || 'gray'
+    context.fillStyle = opts.axisLabelColor || config.axisLabelColor || 'gray'
     context.textAlign = 'center'
     context.textBaseline = 'top'
     if (showXlabel) {
@@ -191,7 +191,7 @@ export function drawAxis(context, axis, region, opts, config) {
 
     let showYaxis = opts.labelOpt ? /yaxis/.test(opts.labelOpt) : true
     let showYlabel = opts.labelOpt ? /yl/.test(opts.labelOpt) : true
-    context.strokeStyle = opts.axisColor || '#cccccc'
+    context.strokeStyle = opts.axisColor || config.axisColor || '#cccccc'
     context.textAlign = 'right'
     context.textBaseline = 'middle'
     for (let item of yLabels) {

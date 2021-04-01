@@ -29,7 +29,7 @@ export default function drawStackbarChart(context, series, opts, config) {
         opts.xLabelMinWidth = opts.xLabelMinWidth || (barWidth * (barsPerItem + 1) + barMargin * (barsPerItem - 1))
     }
 
-    let axis = calcAxisSeries(arr, opts)
+    let axis = calcAxisSeries(arr, opts, config)
     opts.labelOpt = 'yaxis' // 横向轴线
     let result = drawAxis(context, axis, chartRegion, opts, config)
     // 记录图表长度和视图宽度
@@ -90,7 +90,7 @@ export default function drawStackbarChart(context, series, opts, config) {
             }
         })
         let legendRegion = getRelativeRegion(opts.width, opts.height, 0, {left: 30, top: opts.height - bottomAreaHeight})
-        drawLegend(context, legends, legendRegion, {markWidth: 12, legendFontsize: 14, shape: 'rect', ...opts})
+        drawLegend(context, legends, legendRegion, {markWidth: 12, legendFontsize: 14, shape: 'rect', ...opts}, config)
     }
     
 }

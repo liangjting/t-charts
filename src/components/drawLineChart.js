@@ -14,7 +14,7 @@ export default function drawLineChart(context, series, opts, config) {
     let width = opts.width || 300
     let height = opts.height || 150
     let region = getRelativeRegion(width, height)
-    let axis = calcAxisSeries(series, opts)
+    let axis = calcAxisSeries(series, opts, config)
     let result = drawAxis(context, axis, region, opts, config)
     let cRegion = result.region
     // console.log(axis, result)

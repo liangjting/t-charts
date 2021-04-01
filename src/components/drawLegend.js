@@ -7,14 +7,14 @@ import { measureText, absoluteCoord } from '@/components/utils'
  * @param {*} region 
  * @param {{legendPadding, shape}} opts 
  */
-export default function drawLegend(context, series, region, opts) {
+export default function drawLegend(context, series, region, opts, config={}) {
     let nums = series.length
     let { width, height } = region
-    let markWidth = opts.markWidth || 10
-    let legendFontsize = opts.legendFontsize || 14
+    let markWidth = opts.markWidth || config.legendMarkWidth || 10
+    let legendFontsize = opts.legendFontsize || config.legendFontsize || 14
     let legendList = []
     let widthTotal = 0
-    let padding = opts.legendPadding || 20
+    let padding = opts.legendPadding || config.legendPadding || 20
     let shape = opts.shape || 'circle'
     series.forEach(item => {
         let w = markWidth + 2 + measureText(item.label, legendFontsize)
@@ -43,7 +43,7 @@ export default function drawLegend(context, series, region, opts) {
             context.fillRect(p[0] - (markWidth >> 1), p[1] - (markWidth >> 1), markWidth, markWidth)
         }
 
-        context.fillStyle = opts.legendLabelColor || 'gray'
+        context.fillStyle = opts.legendLabelColor || config.legendLabelColor || 'gray'
         context.fillText(item.label, ...absoluteCoord(textCoord, region))
     }
 }

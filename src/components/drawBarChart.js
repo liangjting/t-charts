@@ -15,7 +15,7 @@ export default function drawBarChart(context, series, opts, config) {
         return [item.label, item.data]
     })
     opts.xLabels = xLabels
-    let axis = calcAxisSeries(arr, opts)
+    let axis = calcAxisSeries(arr, opts, config)
     let chartRegion = getRelativeRegion(opts.width, opts.height)
     // let result = drawAxis(context, axis, region, opts, config)
     // console.log(result)

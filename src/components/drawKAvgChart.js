@@ -41,7 +41,7 @@ export default function drawKAvgChart(context, series, opts, config) {
         return [item.label, item.data.reduce((a, b) => a > b ? a: b, 0)]
     })
     opts.xLabels = xLabels
-    let axis = calcAxisSeries(arr, opts)
+    let axis = calcAxisSeries(arr, opts, config)
     // let region = getRelativeRegion(opts.width, opts.height)
     let padding = config.padding || 0
     let bottomAreaHeight = 2
