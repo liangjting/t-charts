@@ -161,6 +161,7 @@ export function drawAxis(context, axis, region, opts, config) {
     if (xLabelWidth < xLabelMinWidth) {
         let offset = xLabelNum * xLabelMinWidth * ((axis.xLabels[0] && axis.xLabels[0][0]) || 0)
         chartWidth = xLabelMinWidth * xLabelNum
+        xLabelWidth = xLabelMinWidth
         xLabels = axis.xLabels.map((item, index) => {
             return [Math.round(region.left + ylabelWidth + index * xLabelMinWidth + offset), item[1]]
         })
@@ -179,11 +180,21 @@ export function drawAxis(context, axis, region, opts, config) {
     context.textAlign = 'center'
     context.textBaseline = 'top'
     if (showXlabel) {
+        let xOffset = opts.xOffset || 0
         for (let item of xLabels) {
             // context.beginPath()
             // context.moveTo(item[0], region.bottom - xlabelHeight)
             // context.lineTo(item[0], region.bottom - xlabelHeight + markLen)
             // context.stroke()
+            // 过滤超出画布的部分
+            let left = item[0] - xLabelWidth / 2 + xOffset
+            let right = left + xLabelWidth
+            if (right < region.left + ylabelWidth) {
+                continue
+            }
+            if (left > region.left + ylabelWidth + cWidth) {
+                break
+            }
             onePixelLine(context, item[0], region.bottom - xlabelHeight, item[0], region.bottom - xlabelHeight + markLen, opts.dpr)
             context.fillText(item[1], item[0], region.bottom - xlabelHeight + markLen + textPadding)
         }

@@ -75,6 +75,13 @@ export default function drawStackbarChart(context, series, opts, config) {
     }
     opts.labelOpt = 'xl'
     drawAxis(context, axis, chartRegion, opts, config)
+
+    // 过滤掉超出画布显示的部分
+    bars = bars.filter(item => {
+        let left = item.data[0] + opts.xOffset
+        let right = item.data[0] + item.data[2] + opts.xOffset
+        return (left >= result.region.left && left <= result.region.right) || (right >= result.region.left && right <= result.region.right)
+    })
     darwBars(context, bars)
     context.restore()
     context.clearRect(0, 0, result.region.left, opts.height)

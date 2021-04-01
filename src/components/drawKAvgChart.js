@@ -81,8 +81,27 @@ export default function drawKAvgChart(context, series, opts, config) {
     }
     opts.labelOpt = 'xl'
     drawAxis(context, axis, chartRegion, opts, config)
+    // 过滤掉超出画布显示的部分
+    bars = bars.filter(item => {
+        let left = item.data[0] + opts.xOffset
+        let right = item.data[0] + item.data[2] + opts.xOffset
+        return (left >= result.region.left && left <= result.region.right) || (right >= result.region.left && right <= result.region.right)
+    })
     darwBars(context, bars)
-    drawLine(context, avgPoints)
+    // 过滤掉超出画布显示的部分
+    let startIdx = 0
+    let endIdx = 0
+    for (let i = 0; i < avgPoints.length; i++) {
+        let item = avgPoints[i]
+        let x = item.data[0] + opts.xOffset
+        if (x < result.region.left) {
+            startIdx = i
+        } else  {
+            endIdx = i
+        }
+        if (x > result.region.right) break
+    }
+    drawLine(context, avgPoints.slice(startIdx, endIdx + 1))
     context.restore()
     context.clearRect(0, 0, result.region.left, opts.height)
     opts.labelOpt = 'yl'
