@@ -278,7 +278,11 @@ stackBar.feed({
 const kAvgChart = new Charts({
     canvasId: 'k-avg',
     type: 'k-avg',
-    xLabelMinWidth: 40,
+    xLabelMinWidth: 30,
+    barWidth: 10,
+    color: 'red',
+    lineColor: '#aeaeae'
+    // lineColor: 'gray'
 })
 
 let scrollStart = false
