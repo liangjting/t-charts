@@ -1,5 +1,5 @@
 import { drawAxis, calcAxisSeries } from './drawAxis'
-import { getRelativeRegion } from './utils'
+import { getRelativeRegion, onePixelLine } from './utils'
 function coordFromPencentage([xp, yp], {left, bottom, width, height}) {
     return [xp * width + left, bottom - yp * height]
 }
@@ -18,11 +18,23 @@ function drawToptips(context, toptip, region, opts={}) {
     let pointRadius = 3
     let labelPadding = 2
     let padding = 6
+    let lineStyle = opts.toptipsLineStyle || ''
     context.save()
     context.fillStyle = pointColor
     context.beginPath()
     context.arc(...toptip.point, pointRadius, 0, 2 * Math.PI)
     context.fill()
+
+    context.strokeStyle = pointColor
+    context.setLineDash([4, 2])
+    context.lineWidth = 1
+    if (/hl/.test(lineStyle)) {
+        onePixelLine(context, region.left, toptip.point[1], region.right, toptip.point[1], opts.dpr)
+    }
+    if (/vl/.test(lineStyle)) {
+        onePixelLine(context, toptip.point[0], region.top, toptip.point[0], region.bottom, opts.dpr)
+    }
+    
 
     let [x, y] = toptip.point
     let labelWidth = context.measureText(toptip.label).width + labelPadding * 2
@@ -44,7 +56,7 @@ function drawToptips(context, toptip, region, opts={}) {
 
     let leftTop = [x - labelWidth / 2, y - labelHeight / 2]
 
-    console.log('lefttop', leftTop, labelWidth, labelHeight)
+    // console.log('lefttop', leftTop, labelWidth, labelHeight)
     context.fillRect(...leftTop, labelWidth, labelHeight)
 
     context.fillStyle = fontColor
@@ -98,7 +110,7 @@ export default function drawLineChart(context, series, opts, config) {
         context.stroke()
     }
     if (showMaxval && maxValPoint) {
-        console.log(maxValPoint, maxVal)
+        // console.log(maxValPoint, maxVal)
         maxValPoint = [...coordFromPencentage(maxValPoint, cRegion)]
         drawToptips(context, {point: maxValPoint, label: maxVal}, cRegion, opts)
     }
