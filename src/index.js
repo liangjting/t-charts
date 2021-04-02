@@ -158,6 +158,8 @@ let lineChart = new Charts({
     type: 'line',
     xLabelNum: 5,
     axisFontSize: 14,
+    showMaxval: true,
+    maxvalColor: 'black',
     xLabelFormat(label) {
         return label + 'm'
     },
