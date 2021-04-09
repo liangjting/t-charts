@@ -1,9 +1,6 @@
 import { measureText, getRelativeRegion, absoluteCoord } from '@/components/utils'
 import drawLegend from './drawLegend'
-
-function drawAxis() {
-
-}
+import { drawAxis, calcAxisSeries} from './drawAxis'
 
 function toPercentage(arrData, arrMax=[]) {
     let result = []
@@ -32,6 +29,7 @@ function drawLoadChart(chart, config) {
     let chartArea = getRelativeRegion(width, height, padding, {bottom: bottomAreaHeight, left: 0})
     // console.log(chartArea)
     let xLabelFormat = chart.opts.xLabelFormat
+    let xLabelNum = chart.opts.xLabelNum || 5
     context.clearRect(0, 0, width, height)
     
     context.lineWidth = 1
@@ -59,9 +57,10 @@ function drawLoadChart(chart, config) {
         scale++
     }
     let xAxisOffset = parseInt(chartArea.width / (maxSpan / scale))
+    xAxisOffset = parseInt(chartArea.width / xLabelNum)
     // console.log(xAxisOffset)
     context.textBaseline = 'top'
-    context.textAlign = 'center'
+    context.textAlign = 'left'
     context.strokeStyle = 'gray'
     context.fillStyle = 'gray'
     for (let i = 0; i * xAxisOffset < chartArea.width; i++) {
@@ -69,7 +68,7 @@ function drawLoadChart(chart, config) {
         context.moveTo(i * xAxisOffset + chartArea.left, chartArea.bottom + 1)
         context.lineTo(i * xAxisOffset + chartArea.left, chartArea.bottom + 4)
         context.stroke()
-        context.fillText(xLabelFormat ? xLabelFormat(i * scale) : (i * scale), i * xAxisOffset + chartArea.left, chartArea.bottom + textPadding + 4)
+        context.fillText(xLabelFormat ? xLabelFormat(i) : (i * scale), i * xAxisOffset + chartArea.left, chartArea.bottom + textPadding + 4)
     }
     
     // draw load span
