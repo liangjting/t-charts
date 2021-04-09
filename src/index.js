@@ -159,6 +159,7 @@ let lineChart = new Charts({
     xLabelNum: 5,
     axisFontSize: 14,
     showMaxval: true,
+    toptipsLineStyle: 'vlhl',
     maxvalColor: 'black',
     xLabelFormat(label) {
         return label + 'm'
@@ -242,6 +243,48 @@ barChart.feed({
             label: '周四',
             data: 1
         }
+    ]
+})
+
+//bar
+const arrBar = new Charts({
+    canvasId: 'bar-2',
+    type: 'bar',
+    xLabels: [],
+    // xLabelMinWidth: 200,
+    xLabelAlign: 'center',
+    barMargin: 2,
+    barWidth: 10,
+    xLabelNum: 6,
+    yValType: 'integer',
+    xLabelFormat(label) {
+        return label.replace(/\..*/, '') + 's'
+    },
+    yLabelFormat(label) {
+        return label
+    },
+})
+
+arrBar.feed({
+    data: [
+        [1, 3],
+        [2, 3],
+        [3, 3],
+        [4, 3],
+        [5, 3],
+        [6, 3],
+        [7, 3],
+        [8, 3],
+        [9, 3],
+        [10, 3],
+        [11, 3],
+        [12, 3],
+        [13, 3],
+        [14, 3],
+        [15, 3],
+        [16, 3],
+        [17, 3],
+        [18, 5],
     ]
 })
 
