@@ -10,15 +10,24 @@ import { getRelativeRegion, darwBars } from './utils'
  */
 export default function drawBarChart(context, series, opts, config) {
     let xLabels = []
+    let barWidth = opts.barWidth || 16
+    let barMargin = opts.barMargin || 1
     let arr = series.map(item => {
-        xLabels.push(item.label)
-        return [item.label, item.data]
+        if (item instanceof Array) {
+            xLabels.push(''+item[0])
+            return [...item]
+        } else {
+            xLabels.push(item.label)
+            return [item.label, item.data]
+        }
     })
-    opts.xLabels = xLabels
+    opts.xLabels = opts.xLabelNum ? null : xLabels
+    let xLabelNum = opts.xLabelNum || series.length || 1
     let axis = calcAxisSeries(arr, opts, config)
     let chartRegion = getRelativeRegion(opts.width, opts.height)
     // let result = drawAxis(context, axis, region, opts, config)
     // console.log(result)
+    opts.xLabelMinWidth = (barWidth + barMargin) * series.length / xLabelNum
     opts.labelOpt = 'yaxis' // 横向轴线
     let result = drawAxis(context, axis, chartRegion, opts, config)
     
@@ -26,14 +35,18 @@ export default function drawBarChart(context, series, opts, config) {
     opts.chartWidth = result.chartWidth
     opts.chartViewportWidth = result.region.width
     let bars = []
-    let barHalfWidth = (opts.barWidth || 16) >> 1
+    let barHalfWidth = barWidth >> 1
     let {width, height, bottom} = result.region
     let yMax = result.yMax
-    xLabels = result.xLabels
+    // xLabels = result.xLabels
+    let offsetX = result.region.left
+    let barWp = 1 / (series.length || 1)
+    let offsetWp = barWp / 2
     for (let [i, item] of Object.entries(series)) {
+        if (item instanceof Array) item.data = item[1]
         bars.push({
             color: item.color || opts.color || 'red',
-            data: [xLabels[i][0] - barHalfWidth, bottom - item.data / yMax * height, barHalfWidth * 2, item.data / yMax * height]
+            data: [(i * barWp + offsetWp) * result.chartWidth + offsetX - barHalfWidth, bottom - item.data / yMax * height, barHalfWidth * 2, item.data / yMax * height]
         })
     }
     // console.log(bars)
