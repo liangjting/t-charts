@@ -70,7 +70,7 @@ Charts.prototype.draw = function () {
             drawRingProgress(this, Config)
             break
         case 'load-chart':
-            drawLoadChart(this, Config)
+            drawLoadChart(this, Config, this.opts)
             break
         case 'pie':
             drawPieChart(this.context, this.chartData.data, this.opts, Config)

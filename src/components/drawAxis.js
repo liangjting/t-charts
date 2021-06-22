@@ -9,8 +9,8 @@ import { measureText, regionFrom, onePixelLine } from './utils'
 export function calcAxisSeries(series, opts={}, config={}) {
     let result = {}
     let n = series.length
-    let xLabelNum = opts.xLabelNum || 10
-    let yLabelNum = opts.yLabelNum || 5
+    let xLabelNum = Number.isNaN(parseInt(opts.xLabelNum)) ? 10 : parseInt(opts.xLabelNum)
+    let yLabelNum = Number.isNaN(parseInt(opts.yLabelNum)) ? 5 : parseInt(opts.yLabelNum)
     let xRange = opts.xRange || 10
     let yRange = opts.yRange || 10
     let yMax = opts.yMax || 10
@@ -93,12 +93,12 @@ export function calcAxisSeries(series, opts={}, config={}) {
         yMax = opts.yMax || dataYmax
         yMax = dataYmax > yMax ? dataYmax : yMax
         yMin = opts.yMin !== undefined ? opts.yMin : Math.min(...series.map(item => item[1]))
-        let yUnit = yMax / yLabelNum
+        let yUnit = yMax / (yLabelNum || 1)
         yUnit >= 1 ? yUnit = Math.ceil(yUnit) : yUnit.toFixed(2)
         if (opts.yValType === 'integer') {
             yUnit = Math.ceil(yUnit)
         }
-        yMax = yUnit * yLabelNum
+        yMax = yUnit * (yLabelNum || 1)
         yRange = yMax - yMin
         // console.log(xUnit, yUnit)
         for (let i = 1; i <= yLabelNum; i++) {
@@ -150,7 +150,6 @@ export function drawAxis(context, axis, region, opts, config) {
     // context.lineTo(region.right, region.bottom - xlabelHeight)
     // context.stroke()
     // onePixelLine(context, region.left + ylabelWidth, region.bottom - xlabelHeight, region.right, region.bottom - xlabelHeight, opts.dpr)
-    
     let cWidth = region.width - ylabelWidth
     let cHeight = region.height - xlabelHeight - 10
     let xLabelNum = axis.xLabels.length || 1
