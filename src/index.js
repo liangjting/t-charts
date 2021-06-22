@@ -24,6 +24,13 @@ function update() {
 let loadChart = new Charts({
     canvasId: 'load-chart',
     type: 'load-chart',
+    xLabelFormat: (val) => {
+        // console.log(val)
+        return val + 'hr'
+    },
+    // mergeChart: true,
+    // barHeight: 0.8,
+    // colors: ['red', 'orange', 'yellow'],
     chartData: {
 
     }
@@ -156,9 +163,12 @@ ringChart.feed({
 let lineChart = new Charts({
     canvasId: 'line',
     type: 'line',
-    xLabelNum: 5,
+    xLabelNum: 0,//5,
+    yLabelNum: 1,
     axisFontSize: 14,
     showMaxval: true,
+
+    // axisColor: '#FFFFFFFF',
     toptipsLineStyle: 'vlhl',
     maxvalColor: 'black',
     xLabelFormat(label) {
