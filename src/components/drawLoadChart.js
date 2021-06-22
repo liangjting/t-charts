@@ -18,13 +18,15 @@ function percentage2Coords(xp, yp, {top, left, width, height}) {
 function fillRectP(context, xp, yp, wp, hp, {left, top, width, height}) {
     context.fillRect(xp * width + left, yp * height + top, wp * width, hp * height)
 }
-function drawLoadChart(chart, config) {
+function drawLoadChart(chart, config, opts={}) {
     let { width, height } = chart.opts
     let context = chart.context
     let padding = config.padding || 5
     let textPadding = config.textPadding || 0
     let loadChartData = chart.chartData.data || []
     let bottomAreaHeight = chart.opts.legend === false ? 16 : 40
+    let mergeChart = opts.mergeChart || false
+    let colors = opts.colors || config.colors
     let leftArea = 40
     let chartArea = getRelativeRegion(width, height, padding, {bottom: bottomAreaHeight, left: 0})
     // console.log(chartArea)
@@ -35,18 +37,23 @@ function drawLoadChart(chart, config) {
     context.lineWidth = 1
     context.strokeStyle = '#eeeeee'
     let offset = 1 / loadChartData.length
+    let barHeight = opts.barHeight || offset
     let maxSpan = 0
     // draw axis
     for (let i = 0; i < loadChartData.length; i++) {
         if (i == 0) {
             context.strokeStyle = 'gray'
-        } else {
+            context.beginPath()
+            context.moveTo(chartArea.left, chartArea.bottom - i * offset * chartArea.height + 1)
+            context.lineTo(chartArea.right, chartArea.bottom - i * offset * chartArea.height + 1)
+            context.stroke()
+        } else if (!mergeChart) {
             context.strokeStyle = '#eeeeee'
+            context.beginPath()
+            context.moveTo(chartArea.left, chartArea.bottom - i * offset * chartArea.height + 1)
+            context.lineTo(chartArea.right, chartArea.bottom - i * offset * chartArea.height + 1)
+            context.stroke()
         }
-        context.beginPath()
-        context.moveTo(chartArea.left, chartArea.bottom - i * offset * chartArea.height + 1)
-        context.lineTo(chartArea.right, chartArea.bottom - i * offset * chartArea.height + 1)
-        context.stroke()
         let list = loadChartData[i].data
         if (list.length > 0) {
             maxSpan = Math.max(list[list.length - 1][1], maxSpan)
@@ -74,14 +81,18 @@ function drawLoadChart(chart, config) {
     // draw load span
     let series = []
     for (let [index, item] of Object.entries(loadChartData)) {
-        context.fillStyle = config.colors[index % config.colors.length]
+        context.fillStyle = colors[index % colors.length]
         series.push({
             label: item.label,
-            color: config.colors[index % config.colors.length]
+            color: colors[index % colors.length]
         })
         for (let span of item.data) {
             span = toPercentage(span, [maxSpan, maxSpan])
-            fillRectP(context, span[0], 1 - index * offset - offset, span[1] - span[0], offset, chartArea)
+            if (mergeChart) {
+                fillRectP(context, span[0], 1 - barHeight, span[1] - span[0], barHeight, chartArea)
+            } else {
+                fillRectP(context, span[0], 1 - index * offset - offset, span[1] - span[0], offset, chartArea)
+            }
         }
     }
 
