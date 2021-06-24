@@ -215,7 +215,7 @@ export function drawAxis(context, axis, region, opts, config) {
     }
     showYaxis && onePixelLine(context, region.left + ylabelWidth, region.bottom - xlabelHeight, region.right, region.bottom - xlabelHeight, opts.dpr)
 
-    let emptyHint = config.emptyHint || opts.emptyHint
+    let emptyHint = opts.emptyHint || config.emptyHint
     if (axis.empty && emptyHint) {
         context.textBaseline = 'middle'
         context.textAlign = 'center'

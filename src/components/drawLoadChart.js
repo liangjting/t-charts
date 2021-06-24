@@ -108,7 +108,7 @@ function drawLoadChart(chart, config, opts={}) {
         }
     }
 
-    let emptyHint = config.emptyHint || opts.emptyHint
+    let emptyHint = opts.emptyHint || config.emptyHint
     if (empty && emptyHint) {
         context.textBaseline = 'middle'
         context.textAlign = 'center'
