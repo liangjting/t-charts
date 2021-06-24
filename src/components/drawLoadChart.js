@@ -27,6 +27,7 @@ function drawLoadChart(chart, config, opts={}) {
     let bottomAreaHeight = chart.opts.legend === false ? 16 : 40
     let mergeChart = opts.mergeChart || false
     let colors = opts.colors || config.colors
+    let fontSize = opts.axisFontSize || config.axisFontSize || 12
     let leftArea = 40
     let chartArea = getRelativeRegion(width, height, padding, {bottom: bottomAreaHeight, left: 0})
     // console.log(chartArea)
@@ -39,15 +40,23 @@ function drawLoadChart(chart, config, opts={}) {
     let offset = 1 / loadChartData.length
     let barHeight = opts.barHeight || offset
     let maxSpan = 0
+    let ox = Infinity
+    let empty = true
     // draw axis
+    context.strokeStyle = 'gray'
+    context.beginPath()
+    context.moveTo(chartArea.left, chartArea.bottom + 1)
+    context.lineTo(chartArea.right, chartArea.bottom + 1)
+    context.stroke()
     for (let i = 0; i < loadChartData.length; i++) {
-        if (i == 0) {
-            context.strokeStyle = 'gray'
-            context.beginPath()
-            context.moveTo(chartArea.left, chartArea.bottom - i * offset * chartArea.height + 1)
-            context.lineTo(chartArea.right, chartArea.bottom - i * offset * chartArea.height + 1)
-            context.stroke()
-        } else if (!mergeChart) {
+        // if (i == 0) {
+        //     context.strokeStyle = 'gray'
+        //     context.beginPath()
+        //     context.moveTo(chartArea.left, chartArea.bottom - i * offset * chartArea.height + 1)
+        //     context.lineTo(chartArea.right, chartArea.bottom - i * offset * chartArea.height + 1)
+        //     context.stroke()
+        // } else 
+        if (!mergeChart && i > 0) {
             context.strokeStyle = '#eeeeee'
             context.beginPath()
             context.moveTo(chartArea.left, chartArea.bottom - i * offset * chartArea.height + 1)
@@ -57,9 +66,12 @@ function drawLoadChart(chart, config, opts={}) {
         let list = loadChartData[i].data
         if (list.length > 0) {
             maxSpan = Math.max(list[list.length - 1][1], maxSpan)
+            ox = Math.min(list[0][0], ox)
+            empty = false
         }
     }
     let scale = 1
+    maxSpan -= ox
     while (maxSpan / scale > 14) {
         scale++
     }
@@ -68,9 +80,9 @@ function drawLoadChart(chart, config, opts={}) {
     // console.log(xAxisOffset)
     context.textBaseline = 'top'
     context.textAlign = 'left'
-    context.strokeStyle = 'gray'
-    context.fillStyle = 'gray'
-    for (let i = 0; i * xAxisOffset < chartArea.width; i++) {
+    context.fillStyle = opts.axisLabelColor || config.axisLabelColor || 'gray'
+    context.font = `${fontSize}px sans-serif`
+    for (let i = 0; i < xLabelNum; i++) {
         context.beginPath()
         context.moveTo(i * xAxisOffset + chartArea.left, chartArea.bottom + 1)
         context.lineTo(i * xAxisOffset + chartArea.left, chartArea.bottom + 4)
@@ -87,13 +99,22 @@ function drawLoadChart(chart, config, opts={}) {
             color: colors[index % colors.length]
         })
         for (let span of item.data) {
-            span = toPercentage(span, [maxSpan, maxSpan])
+            span = toPercentage([span[0] - ox, span[1] - ox], [maxSpan, maxSpan])
             if (mergeChart) {
                 fillRectP(context, span[0], 1 - barHeight, span[1] - span[0], barHeight, chartArea)
             } else {
                 fillRectP(context, span[0], 1 - index * offset - offset, span[1] - span[0], offset, chartArea)
             }
         }
+    }
+
+    let emptyHint = config.emptyHint || opts.emptyHint
+    if (empty && emptyHint) {
+        context.textBaseline = 'middle'
+        context.textAlign = 'center'
+        context.fillStyle = opts.axisLabelColor || config.axisLabelColor || 'gray'
+        context.font = `${fontSize}px sans-serif`
+        context.fillText(emptyHint, width >> 1, height >> 1)
     }
 
     // 绘制图示
