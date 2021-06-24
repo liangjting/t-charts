@@ -120,7 +120,8 @@ export function calcAxisSeries(series, opts={}, config={}) {
         xOrigin,
         xRange,
         yRange,
-        yMin
+        yMin,
+        empty: n == 0
     }
 }
 
@@ -213,6 +214,16 @@ export function drawAxis(context, axis, region, opts, config) {
         showYlabel && context.fillText(item[1], region.left + ylabelWidth - markLen - textPadding, item[0])
     }
     showYaxis && onePixelLine(context, region.left + ylabelWidth, region.bottom - xlabelHeight, region.right, region.bottom - xlabelHeight, opts.dpr)
+
+    let emptyHint = config.emptyHint || opts.emptyHint
+    if (axis.empty && emptyHint) {
+        context.textBaseline = 'middle'
+        context.textAlign = 'center'
+        context.fillStyle = opts.axisLabelColor || config.axisLabelColor || 'gray'
+        context.strokeStyle = opts.axisLabelColor || config.axisLabelColor || 'gray'
+        context.font = `${fontSize}px sans-serif`
+        context.fillText(emptyHint, ylabelWidth + (cWidth >> 1), cHeight >> 1)
+    }
     region = regionFrom(region, {
         top: 10,
         left: ylabelWidth,
