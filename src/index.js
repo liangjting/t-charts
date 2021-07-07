@@ -18,6 +18,7 @@ function update() {
     })
 }
 
+Charts.config.emptyHint = '没有数据~';
 /**
  * 负荷图
  */
@@ -37,6 +38,12 @@ let loadChart = new Charts({
 })
 
 loadChart.feed({
+    // data: [
+    //     {
+    //         label: 'nobody',
+    //         data: [[100, 150], [200, 300]]
+    //     }
+    // ]
     data: [
         {
             label: '深睡',
@@ -167,7 +174,7 @@ let lineChart = new Charts({
     yLabelNum: 1,
     axisFontSize: 14,
     showMaxval: true,
-
+    fillGradient: true,
     // axisColor: '#FFFFFFFF',
     toptipsLineStyle: 'vlhl',
     maxvalColor: 'black',
@@ -182,6 +189,7 @@ let lineChart = new Charts({
 })
 
 lineChart.feed({
+    marks: [[0, 0]],
     data: [
         [-7, 49],
         [-6, 36],
@@ -205,6 +213,7 @@ document.getElementById('line-btn').addEventListener('click', line)
 function line() {
     console.log('line btn click')
     lineChart.feed({
+        marks: [[3, 9]],
         data: [
             [-7, 49],
             [-6, 36],
