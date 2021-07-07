@@ -78,7 +78,7 @@ Charts.prototype.draw = function () {
             drawPieChart(this.context, this.chartData.data, this.opts, Config)
             break
         case 'line':
-            drawLineChart(this.context, this.chartData.data, this.opts, Config)
+            drawLineChart(this.context, this.chartData, this.opts, Config)
             break
         case 'bar':
             drawBarChart(this.context, this.chartData.data, this.opts, Config)

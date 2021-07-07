@@ -73,14 +73,17 @@ function drawToptips(context, toptip, region, opts={}) {
  * @param {{color}} opts 
  * @param {*} config 
  */
-export default function drawLineChart(context, series, opts, config) {
+export default function drawLineChart(context, chartData, opts, config) {
     let width = opts.width || 300
     let height = opts.height || 150
     let region = getRelativeRegion(width, height)
+    const series = chartData.data || []
+    const marks = chartData.marks || []
     let axis = calcAxisSeries(series, opts, config)
     let result = drawAxis(context, axis, region, opts, config)
     let cRegion = result.region
     let showMaxval = opts.showMaxval || false
+    const fillGradient = opts.fillGradient || false
     // console.log(axis, result)
     // context.fillStyle = 'red'
     // context.fillRect(cRegion.left, cRegion.top, cRegion.width, cRegion.height)
@@ -109,10 +112,49 @@ export default function drawLineChart(context, series, opts, config) {
         }
         context.stroke()
     }
+    if (fillGradient && points.length > 0) {
+        context.lineTo(...coordFromPencentage([points[points.length - 1][0], 0], cRegion))
+        context.lineTo(...coordFromPencentage([points[0][0], 0], cRegion))
+        context.lineTo(...coordFromPencentage(points[0], cRegion))
+        context.closePath()
+        
+        let gradient = context.createLinearGradient(0, 0, 0, cRegion.height);
+        gradient.addColorStop(0, opts.color || 'red');
+        gradient.addColorStop(1,'#FFFFFF00');
+        context.fillStyle = gradient//opts.color || 'red'
+        context.fill()
+    }
     if (showMaxval && maxValPoint) {
         // console.log(maxValPoint, maxVal)
         maxValPoint = [...coordFromPencentage(maxValPoint, cRegion)]
         drawToptips(context, {point: maxValPoint, label: maxVal}, cRegion, opts)
     }
-    
+
+    if (marks.length > 0) {
+        console.log(result)
+        const {xOrigin, xRange, yMin, yRange} = result
+        const {left, top, width, height} = cRegion
+        const m = marks.map(([x, y]) => {
+            x -= xOrigin
+            y -= yMin
+            x = width * x / xRange + left
+            y = height - height * y / yRange + top
+            return [x, y]
+        })
+        drawMarks(context, m, opts)
+    }
+}
+
+function drawMarks(context, marks, opts) {
+    context.fillStyle = opts.color || 'red'
+    const margin = 4
+    for (let [x, y] of marks) {
+        if (isNaN(x) || isNaN(y)) continue
+        context.beginPath()
+        context.moveTo(x, y - margin)
+        context.lineTo(x + 7, y - 9 - margin)
+        context.lineTo(x - 7, y - 9 - margin)
+        context.closePath()
+        context.fill()
+    }
 }
