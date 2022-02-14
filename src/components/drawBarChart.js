@@ -27,7 +27,7 @@ export default function drawBarChart(context, series, opts, config) {
     let chartRegion = getRelativeRegion(opts.width, opts.height)
     // let result = drawAxis(context, axis, region, opts, config)
     // console.log(result)
-    opts.xLabelMinWidth = (barWidth + barMargin) * series.length / xLabelNum
+    opts.xLabelMinWidth = opts.xLabelMinWidth || (barWidth + barMargin) * series.length / xLabelNum
     opts.labelOpt = 'yaxis' // 横向轴线
     let result = drawAxis(context, axis, chartRegion, opts, config)
     

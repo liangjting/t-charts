@@ -120,7 +120,7 @@ export default function drawLineChart(context, chartData, opts, config) {
         
         let gradient = context.createLinearGradient(0, 0, 0, cRegion.height);
         gradient.addColorStop(0, opts.color || 'red');
-        gradient.addColorStop(1,'#FFFFFF00');
+        gradient.addColorStop(1,'rgba(255, 255, 255, 0)');
         context.fillStyle = gradient//opts.color || 'red'
         context.fill()
     }

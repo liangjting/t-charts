@@ -120,7 +120,7 @@ function drawLoadChart(chart, config, opts={}) {
     // 绘制图示
     if (chart.opts.legend !== false) {
         let legendRegion = getRelativeRegion(width, height, padding, {top: height - bottomAreaHeight + 20})
-        drawLegend(context, series, legendRegion, {markWidth: 10, legendFontsize: 14}, config)
+        drawLegend(context, series, legendRegion, {markWidth: 10, legendFontsize: 14, legendLabelColor: opts.legendLabelColor}, config)
     }
     
 }
