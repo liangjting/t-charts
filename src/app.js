@@ -121,6 +121,7 @@ Charts.prototype.draw = function () {
         default:
             break
     }
+    this.context.draw && this.context.draw() // uni app 
 }
 
 Charts.prototype.feed = function(data = {}) {
