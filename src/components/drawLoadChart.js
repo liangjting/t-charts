@@ -22,17 +22,21 @@ function drawLoadChart(chart, config, opts={}) {
     let { width, height } = chart.opts
     let context = chart.context
     let padding = config.padding || 5
+    let paddingObj = {left: 0, right: 0, bottom: 0, top: 0};
+    opts.paddingObj && (paddingObj = {...paddingObj,...opts.paddingObj})
     let textPadding = config.textPadding || 0
     let loadChartData = chart.chartData.data || []
-    let bottomAreaHeight = chart.opts.legend === false ? 16 : 40
+    let bottomAreaHeight = chart.opts.legend === false ? 20 : 40
     let mergeChart = opts.mergeChart || false
     let colors = opts.colors || config.colors
     let fontSize = opts.axisFontSize || config.axisFontSize || 12
     let leftArea = 40
-    let chartArea = getRelativeRegion(width, height, padding, {bottom: bottomAreaHeight, left: 0})
-    // console.log(chartArea)
     let xLabelFormat = chart.opts.xLabelFormat
     let xLabelNum = chart.opts.xLabelNum || 5
+    let labelPadding = paddingObj.left || (xLabelFormat ? 0.5 * Math.max(context.measureText(xLabelFormat(0)).width, context.measureText(xLabelFormat(xLabelNum)).width): 5)
+    labelPadding = labelPadding > 0.15 * width ? 0.15 * width : labelPadding
+    let chartArea = getRelativeRegion(width, height, padding, {bottom: bottomAreaHeight + paddingObj.bottom, left: labelPadding, right: labelPadding})
+    // console.log(chartArea)
     context.clearRect(0, 0, width, height)
     
     context.lineWidth = 1
@@ -76,13 +80,14 @@ function drawLoadChart(chart, config, opts={}) {
         scale++
     }
     let xAxisOffset = parseInt(chartArea.width / (maxSpan / scale))
-    xAxisOffset = parseInt(chartArea.width / xLabelNum)
+    xAxisOffset = (chartArea.width / (xLabelNum))
     // console.log(xAxisOffset)
     context.textBaseline = 'top'
-    context.textAlign = 'left'
+    context.textAlign = 'center'
     context.fillStyle = opts.axisLabelColor || config.axisLabelColor || 'gray'
+    context.strokeStyle = 'gray'
     context.font = `${fontSize}px sans-serif`
-    for (let i = 0; i < xLabelNum; i++) {
+    for (let i = 0; i <= xLabelNum; i++) {
         context.beginPath()
         context.moveTo(i * xAxisOffset + chartArea.left, chartArea.bottom + 1)
         context.lineTo(i * xAxisOffset + chartArea.left, chartArea.bottom + 4)
