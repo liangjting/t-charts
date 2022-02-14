@@ -9,10 +9,36 @@ import drawRingChart from '@/components/drawRingChart'
 import drawKAvgChart from '@/components/drawKAvgChart'
 import { measureText } from '@/components/utils.js'
 
-export function Charts(opts={}) {
+export function Charts(opts={}, component) {
     this.ready = false
     this.opts = opts
-    if (typeof wx != 'undefined') {
+    if (typeof uni !== 'undefined') {
+        let query = component ? uni.createSelectorQuery().in(component) : uni.createSelectorQuery()
+        // if (component) query.in(component)
+        query.select('#'+opts.canvasId).fields({context: true, size: true}).exec(res => {
+            // console.log(res)
+            let ctx = res[0].context // component ? uni.createCanvasContext(opts.canvasId, component) : res[0].context // uni.createCanvasContext(opts.canvasId)
+            // ctx.setFillStyle('red')
+            // ctx.fillRect(0, 0, 300, 150)
+            // ctx.draw()
+            this.res = res[0]
+            this.opts.width = res[0].width || 350
+            this.opts.height = res[0].height || 200
+            this.context = ctx
+            // this.context.scale(dpr, dpr)
+            // this.opts.dpr = dpr
+            if (this.context.measureText === undefined) {
+                this.context.measureText = function (text) {
+                    let fontSize = /(\d+)px/.test(this.font) ? parseInt(RegExp.$1) : 10
+                    let width = measureText(text, fontSize)
+                    return { width }
+                }
+            }
+            this.ready = true
+            typeof this.onReady === 'function' && this.onReady()
+        })
+        
+    } else if (typeof wx != 'undefined') {
         const query = wx.createSelectorQuery()
         query.select('#'+opts.canvasId)
         .fields({ node: true, size: true })
@@ -98,7 +124,7 @@ Charts.prototype.draw = function () {
 }
 
 Charts.prototype.feed = function(data = {}) {
-    if (data instanceof Array) {
+    if (data instanceof Array || Object.prototype.toString.call(data).indexOf('Array') >= 0) {
         this.chartData = {data}
     } else {
         this.chartData = data
