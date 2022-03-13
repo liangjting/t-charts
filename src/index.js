@@ -170,7 +170,7 @@ ringChart.feed({
 let lineChart = new Charts({
     canvasId: 'line',
     type: 'line',
-    xLabelNum: 0,//5,
+    xLabelNum: 5,//5,
     yLabelNum: 1,
     axisFontSize: 14,
     showMaxval: true,
@@ -184,7 +184,7 @@ let lineChart = new Charts({
     yLabelFormat(label) {
         return label + 'm²'
     },
-    xLabelAlign: 'start',
+    xLabelAlign: 'full',
     yMin: 0
 })
 

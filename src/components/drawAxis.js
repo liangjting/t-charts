@@ -50,8 +50,13 @@ export function calcAxisSeries(series, opts={}, config={}) {
         let labelWP = 1 / (xLabelNum || 1)
         let xUnit = xRange * labelWP
         let offset;
+        xUnit > 1 ? xUnit = Math.round(xUnit) : xUnit.toFixed(2)
         xLabelAlign = opts.xLabelAlign || 'start'
         switch (xLabelAlign) {
+            case 'full':
+                offset = labelWP
+                xLabels.push([0, xLabelFormat((xUnit > 1 ? xOrigin.toFixed(1) : xOrigin.toFixed(2)))])
+                break
             case 'start':
                 offset = 0
                 break
@@ -62,7 +67,6 @@ export function calcAxisSeries(series, opts={}, config={}) {
                 offset = labelWP / 2
                 break
         }
-        xUnit > 1 ? xUnit = Math.round(xUnit) : xUnit.toFixed(2)
         for (let i = 0; i < xLabelNum; i++) {
             let xp = i * labelWP + offset
             let val = xp * xRange + xOrigin
