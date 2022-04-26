@@ -155,7 +155,17 @@ export function drawAxis(context, axis, region, opts, config) {
     // context.lineTo(region.right, region.bottom - xlabelHeight)
     // context.stroke()
     // onePixelLine(context, region.left + ylabelWidth, region.bottom - xlabelHeight, region.right, region.bottom - xlabelHeight, opts.dpr)
-    let cWidth = region.width - ylabelWidth
+    let rightPadding =  0; // 用于对应显示x轴最后一个label的显示不全问题
+    let leftPadding = 0;
+    if (opts.xLabelAlign == 'full') {
+        // 计算rightPadding 用于完整显示最后一个label
+        rightPadding = Math.ceil(context.measureText(axis.xLabels[axis.xLabels.length - 1][1]).width * 0.5) || 0;
+        leftPadding = Math.ceil(context.measureText(axis.xLabels[0][1]).width * 0.5) || 0;
+        ylabelWidth = ylabelWidth < leftPadding ? leftPadding : ylabelWidth
+    }
+    region.right -= rightPadding;
+
+    let cWidth = region.width - ylabelWidth - rightPadding
     let cHeight = region.height - xlabelHeight - 10
     let xLabelNum = axis.xLabels.length || 1
     let xLabelWidth = cWidth / xLabelNum
