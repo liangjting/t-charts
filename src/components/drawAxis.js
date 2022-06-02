@@ -162,9 +162,11 @@ export function drawAxis(context, axis, region, opts, config) {
     let leftPadding = 0;
     if (opts.xLabelAlign == 'full') {
         // 计算rightPadding 用于完整显示最后一个label
-        rightPadding = Math.ceil(context.measureText(axis.xLabels[axis.xLabels.length - 1][1]).width * 0.5) || 0;
-        leftPadding = Math.ceil(context.measureText(axis.xLabels[0][1]).width * 0.5) || 0;
-        ylabelWidth = ylabelWidth < leftPadding ? leftPadding : ylabelWidth
+        if (axis.xLabels.length) {
+            rightPadding = Math.ceil(context.measureText(axis.xLabels[axis.xLabels.length - 1][1]).width * 0.5) || 0;
+            leftPadding = Math.ceil(context.measureText(axis.xLabels[0][1]).width * 0.5) || 0;
+            ylabelWidth = ylabelWidth < leftPadding ? leftPadding : ylabelWidth
+        }
     }
     region.right -= rightPadding;
 
