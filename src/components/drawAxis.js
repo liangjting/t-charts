@@ -96,18 +96,21 @@ export function calcAxisSeries(series, opts={}, config={}) {
         let dataYmax = Math.max(...series.map(item => item[1]))
         yMax = opts.yMax || dataYmax
         yMax = dataYmax > yMax ? dataYmax : yMax
-        yMin = opts.yMin !== undefined ? opts.yMin : Math.min(...series.map(item => item[1]))
-        let yUnit = yMax / (yLabelNum || 1)
+        yMin = Math.min(...series.map(item => item[1]))
+        yMin = yMin > 0 ? 0 : yMin
+        yMin = opts.yMin !== undefined ? opts.yMin : yMin
+        yRange = yMax - yMin
+        let yUnit = yRange / (yLabelNum || 1)
         yUnit >= 1 ? yUnit = Math.ceil(yUnit) : yUnit.toFixed(2)
         if (opts.yValType === 'integer') {
             yUnit = Math.ceil(yUnit)
         }
         yMax = yUnit * (yLabelNum || 1)
-        yRange = yMax - yMin
+        yRange = yUnit * (yLabelNum || 1)
         // console.log(xUnit, yUnit)
         for (let i = 1; i <= yLabelNum; i++) {
             let val = i * yUnit
-            yLabels.push([val / yMax, yLabelFormat(('' + yUnit).split('.').length == 1 ? (i * yUnit) : val.toFixed(2))])
+            yLabels.push([val / yRange, yLabelFormat(('' + yUnit).split('.').length == 1 ? (i * yUnit + yMin) : (val + yMin).toFixed(2))])
         }
     }
     

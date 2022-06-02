@@ -90,10 +90,12 @@ export default function drawLineChart(context, chartData, opts, config) {
     context.strokeStyle = opts.color || 'red'
     let xRange = axis.xRange || 10
     let yMax = axis.yMax || 10
+    let yMin = axis.yMin || 0
+    let yRange = axis.yRange || yMax - yMin
     let xOrigin = result.xOrigin || 0
     let maxVal, maxValPoint
     let points = series.map(([x, y]) => {
-        let p = [(x - xOrigin) / xRange, y/ yMax]
+        let p = [(x - xOrigin) / xRange, (y - yMin)/ yRange]
         if (maxVal === undefined) {
             maxVal = y
             maxValPoint = p
