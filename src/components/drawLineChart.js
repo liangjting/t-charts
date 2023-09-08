@@ -84,6 +84,7 @@ export default function drawLineChart(context, chartData, opts, config) {
     let cRegion = result.region
     let showMaxval = opts.showMaxval || false
     const fillGradient = opts.fillGradient || false
+    let fillColor      = opts.fillColor || ''
     // console.log(axis, result)
     // context.fillStyle = 'red'
     // context.fillRect(cRegion.left, cRegion.top, cRegion.width, cRegion.height)
@@ -93,6 +94,7 @@ export default function drawLineChart(context, chartData, opts, config) {
     let yMin = axis.yMin || 0
     let yRange = axis.yRange || yMax - yMin
     let xOrigin = result.xOrigin || 0
+    let yZeroP = (0 - yMin) / yRange // y轴0点位置
     let maxVal, maxValPoint
     let points = series.map(([x, y]) => {
         let p = [(x - xOrigin) / xRange, (y - yMin)/ yRange]
@@ -114,16 +116,20 @@ export default function drawLineChart(context, chartData, opts, config) {
         }
         context.stroke()
     }
-    if (fillGradient && points.length > 0) {
-        context.lineTo(...coordFromPencentage([points[points.length - 1][0], 0], cRegion))
-        context.lineTo(...coordFromPencentage([points[0][0], 0], cRegion))
+    if ((fillGradient || fillColor) && points.length > 0) {
+        context.lineTo(...coordFromPencentage([points[points.length - 1][0], yZeroP], cRegion))
+        context.lineTo(...coordFromPencentage([points[0][0], yZeroP], cRegion))
         context.lineTo(...coordFromPencentage(points[0], cRegion))
         context.closePath()
         
-        let gradient = context.createLinearGradient(0, 0, 0, cRegion.height);
-        gradient.addColorStop(0, opts.color || 'red');
-        gradient.addColorStop(1,'rgba(255, 255, 255, 0)');
-        context.fillStyle = gradient//opts.color || 'red'
+        if (fillGradient) {
+            let gradient = context.createLinearGradient(0, 0, 0, cRegion.height);
+            gradient.addColorStop(0, opts.color || 'red');
+            gradient.addColorStop(1,'rgba(255, 255, 255, 0)');
+            context.fillStyle = gradient//opts.color || 'red'
+        } else {
+            context.fillStyle = fillColor
+        }
         context.fill()
     }
     if (showMaxval && maxValPoint) {

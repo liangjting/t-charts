@@ -99,6 +99,11 @@ export function calcAxisSeries(series, opts={}, config={}) {
         yMin = Math.min(...series.map(item => item[1]))
         yMin = yMin > 0 ? 0 : yMin
         yMin = opts.yMin !== undefined ? opts.yMin : yMin
+        if (opts.yBalance) {//y轴正负值平衡，y轴0值位于中间
+            let tmpMax = Math.max(Math.abs(yMax), Math.abs(yMin))
+            yMax = tmpMax;
+            yMin = -tmpMax;
+        }
         yRange = yMax - yMin
         let yUnit = yRange / (yLabelNum || 1)
         yUnit >= 1 ? yUnit = Math.ceil(yUnit) : yUnit.toFixed(2)

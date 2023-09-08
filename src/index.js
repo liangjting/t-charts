@@ -171,10 +171,12 @@ let lineChart = new Charts({
     canvasId: 'line',
     type: 'line',
     xLabelNum: 5,//5,
-    yLabelNum: 1,
+    yLabelNum: 5,
     axisFontSize: 14,
     showMaxval: true,
-    fillGradient: true,
+    // fillGradient: true,
+    fillColor: 'red',
+    yBalance: true,
     // axisColor: '#FFFFFFFF',
     toptipsLineStyle: 'vlhl',
     maxvalColor: 'black',
@@ -185,7 +187,7 @@ let lineChart = new Charts({
         return label + 'm²'
     },
     xLabelAlign: 'full',
-    yMin: 0
+    // yMin: 0
 })
 
 lineChart.feed({
@@ -206,7 +208,7 @@ lineChart.feed({
         [5, 25],
         [6, 36],
         [7, 49]
-    ]
+    ].map(item => [item[0], item[1] - 16])
 })
 
 document.getElementById('line-btn').addEventListener('click', line)
